@@ -1,0 +1,15 @@
+open containing folder in cmd
+skriv python navnet på filen
+kopier ip-adressen, kjør den i browser
+
+python snakker med fusekiserver i DO_POST-koden
+
+skal ikke ha med '/filnavn' i filePath(Linje 11 i koden hans)
+lag en templates-folder. hvorfor? inne i Python-folderen. inne i templates-folderen ligger DFAkoden hans.
+Koden ligger under 15.11.21.
+ser at parameterne som skla bli satt er satt til <SIDE>.
+bruker kodelinje 104, txt.replace(<SIDE>, pair[1]) for å bytte til rett parameter. 
+
+linje 77 skal være template-folderen med dfa-koden sitt navn etter \\templates\\navnet. 
+Skal og ha en DFA folder hvor dfakoden ligger.
+paramServer.py reads from template, writes to DFAs. NX reads DFAkode.
