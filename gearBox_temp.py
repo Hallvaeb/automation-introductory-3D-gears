@@ -1,4 +1,4 @@
-from Components.Gear import Gear
+from Gear import Gear
 
 
 #----------------------------------------------------------------------#

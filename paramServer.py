@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 import os
 import sys
+import fusekiRequest
 
 
 HOST_NAME = '127.0.0.1' 
@@ -14,8 +15,6 @@ filePath = 'C:/Users/Eier/OneDrive/Studier/TMM4270/python'
 
 # Handler of HTTP requests / responses
 class MyHandler(BaseHTTPRequestHandler):
-	
-
 
 	def do_HEAD(s):
 		s.send_response(200)
@@ -107,7 +106,16 @@ class MyHandler(BaseHTTPRequestHandler):
 				out += ('Gear nr.' + str(i) + ': ' + str(radius_list[i]) + ' [mm]<br>')
 			s.wfile.write(bytes(out, 'utf-8'))
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a>', 'utf-8'))
-			
+
+			try:
+				gearBox_photo_id = fusekiRequest.getGearBox(radius_list)
+				if(gearBox_photo_id != -1):
+					s.wfile.write(bytes('<img src="Gearbox_images.gearbox'+gearBox_photo_id+'" alt= "Photo missing...">', 'utf-8'))
+				else:
+					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
+			except:
+				s.wfile.write(bytes('That gearbox was too cool for the program to run correctly.', 'utf-8'))
+
 			# Skjema for bestilling
 			form = """<form action="/reciept">
                 <h2>We're ready to take your order!</h2>
