@@ -34,7 +34,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes('<html lang="en"> <title> Gearbox </title></head>', 'utf-8'))
 			s.wfile.write(bytes('<section><h2>GearBox - building [1/2]</h2><form action = "/setRadius" method="post">', 'utf-8'))
 			s.wfile.write(bytes('<label for="nGears">How many gears do you want?</label><br>', 'utf-8'))
-			s.wfile.write(bytes('<input type="number" name="nGears" id="nGears" autofocus value = "2">', 'utf-8'))
+			s.wfile.write(bytes('<input pattern="0123456789" type="number" name="nGears" id="nGears" autofocus required>', 'utf-8'))
 			s.wfile.write(bytes('<input type="submit" value="submit"><br>', 'utf-8'))
 			s.wfile.write(bytes('</form></section>', 'utf-8'))
 
@@ -78,8 +78,8 @@ class MyHandler(BaseHTTPRequestHandler):
 			# Making a field for each gear radius
 			for i in range(int(nGears)): # nGears
 					s.wfile.write(bytes('<label for="gear"' + str(i) + '> Gear ' + str(i+1) + ': </label>', 'utf-8'))
-					s.wfile.write(bytes('<input id = ' + str(i) + ' name = '"gear" + str(i) + ' placeholder = "Radius [mm]" required autofocus> <br><br>', 'utf-8'))
-		
+					s.wfile.write(bytes('<input type = "number" pattern="0123456789" id = ' + str(i) + ' name = '"gear" + str(i) + ' placeholder = "Radius [mm]" required autofocus> <br><br>', 'utf-8'))
+							
 			# Making the buttons
 			s.wfile.write(bytes('<input type="submit" value="submit">', 'utf-8'))
 			s.wfile.write(bytes('</form></section>', 'utf-8'))
@@ -124,7 +124,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 </fieldset>
                 <fieldset>
                     <legend>Gear specifications</legend>
-                    <label for= material" material</label><br>
+                    <label for="material">Material </label><br>
                     <select id= material" name= material">
                         <option value="" disabled selected>Material</option>
                         <option>Brass</option>
