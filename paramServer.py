@@ -2,16 +2,14 @@
 #HTTP Server template / One parameter
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
-import os
-import sys
-import fusekiRequest
+# import fusekiRequest
 
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
 
 #file path of this python file
-filePath = 'C:/Users/Eier/OneDrive/Studier/TMM4270/python'
+# filePath = 'C:/Users/Eier/OneDrive/Studier/TMM4270/python'
 
 # Handler of HTTP requests / responses
 class MyHandler(BaseHTTPRequestHandler):
@@ -105,7 +103,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			for i in range(nGears):
 				out += ('Gear nr.' + str(i) + ': ' + str(radius_list[i]) + ' [mm]<br>')
 			s.wfile.write(bytes(out, 'utf-8'))
-			s.wfile.write(bytes('<a href="/"><button>Go back</button></a>', 'utf-8'))
+			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
 			try:
 				gearBox_photo_id = fusekiRequest.getGearBox(radius_list)
@@ -114,7 +112,7 @@ class MyHandler(BaseHTTPRequestHandler):
 				else:
 					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
 			except:
-				s.wfile.write(bytes('That gearbox was too cool for the program to run correctly.', 'utf-8'))
+				s.wfile.write(bytes('That gearbox would\'ve been too cool for the program to display it.', 'utf-8'))
 
 			# Skjema for bestilling
 			form = """<form action="/reciept">
