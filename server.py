@@ -2,6 +2,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 from form import FormCreator
 from fuseki import FusekiHandler
+from urllib.parse import unquote
+from random import randint
+
+from id import IDGenerator
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
@@ -26,6 +30,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 		if path.find("/") != -1 and len(path) == 1:
 			site = head+"""
 			<section>
+				<h1>WELCOME TO GEAR 10 Productions </h1>
 				<h2>GearBox - building [1/2]</h2>
 				<form action = "/setRadius" method="post">
 					<label for="n_gears">How many gears do you want?</label><br><br>
@@ -68,8 +73,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
 		elif path.find("/reciept") != -1:
 			thankyou = head+"""
-			<section><h1>outdated Thank you! Your ordered has been registered! </h1>
-			... Disclaimer: Unfortunately, this is only a school project so estimated delivery is NEVER...<br>
+			<section><h1>Aii, you can't do that! The order was made but now you lost your reciept! </h1><br>
 			"""
 			s.wfile.write(bytes(thankyou, 'utf-8'))
 			s.wfile.write(bytes('<a href="/"><button>Make another!</button></a>', 'utf-8'))
@@ -150,9 +154,11 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes(form, 'utf-8'))
 		
 		elif path.find("/reciept") != -1:
+			
+			s.wfile.write(bytes(ServerHandler.get_personalized_message(), 'utf-8'))
+
 			thankyou = head+"""
 			<section>
-				<h1> Thank you! Your ordered has been registered! </h1>
 				... Disclaimer: Unfortunately, this is only a school project so estimated delivery is NEVER...<br>
 			</section><br>
 			"""
@@ -167,20 +173,12 @@ class ServerHandler(BaseHTTPRequestHandler):
 
 			# [Name, address, phone, email, material, color, radius_list[]]
 			form_input_list = [pairs[i].split("=")[1] for i in range(len(pairs))]
-			
-			# Remove weird signs in inefficient way
-			string_input_list = str(form_input_list).replace("+", " ").replace("%40", "@").replace("%21", "!").replace("%3D", "=").replace("%3F", "(").replace("%28", "(").replace("%29", ")").replace("%0D", "<br>").replace("%0A", "<br>")
-			reciept = """
-				<section>
-					<h1> ----------------------- ORDER SUMMARY ----------------------- </h1>
-					"""+string_input_list+ """<br><br>
-					Hope you will be happy with your purchase... You can pay later!
-				</section>"""
-
+		
+			reciept = ServerHandler.create_reciept(form_input_list)
 			s.wfile.write(bytes(reciept, 'utf-8'))
 			
 			# [Name, address, phone, email, material, color, radius_list[]]
-			FusekiHandler.add_order_to_db(form_input_list)
+			# FusekiHandler.add_order_to_db(form_input_list)
 
 	def create_header():
 		# Returns a header
@@ -188,11 +186,84 @@ class ServerHandler(BaseHTTPRequestHandler):
 		return	"""
 			<HTML lang="en"> 
 			<head>
-				<title> Gearbox</title>
+				<title> Gear 10 </title>
 				<link rel="icon" href="./style_fav/favicon_10.ico" type="image/x-icon"/>
 				<link rel="stylesheet" href="style.css">
 			</head>
 			"""
+
+	def get_personalized_message():
+		# customer has now been added to db with the current order, and therefore everyone is in db at this point, with >0 orders
+		# The gear will already have been put in the db, even if it's a new one. Making a dynamic message for this is not worth the hassle.
+		msg = ""
+		try:
+			n_orders = len(FusekiHandler.get_customer_orders())
+			if(n_orders == 1):
+				msg += "WELCOME NEW CUSTOMER! You just made your first order (at least on this email).<br>"
+			else:
+				msg += "WELCOME BACK! You now have "+str(n_orders)+"!"
+		except:
+			msg += "Order successfully added!<br>"
+
+		return msg
+	
+	def create_reciept(form_input_list):
+		# Remove weird signs in inefficient but functional way
+		string_input_list = (str(form_input_list[i]).replace("+", " ").replace("%40", "@").replace("%21", "!").replace("%3D", "=").replace("%3F", "(").replace("%28", "(").replace("%29", ")").replace("%0D", "<br>").replace("%0A", "<br>").replace("%5B", "[").replace("%2C", ",").replace("%5D", "]") for i in range(len(form_input_list)))
+		# Yes I have tried to fix this but no luck.
+		# print("STR:"+ unquote(next((str(x) for x in form_input_list))))
+		reciept = """
+				<section>
+					<h1> ----------------------- ORDER SUMMARY ----------------------- </h1>
+					Name: """+next(string_input_list)+ """<br>
+					Address: """+next(string_input_list)+ """<br>
+					Phone: """+next(string_input_list)+ """<br>
+					Email: """+next(string_input_list)+ """<br><br>
+					"""+ServerHandler.get_printable_radiuses(next(string_input_list))+"""
+					Material: """
+		material = next((string_input_list), "Unspecified")
+		print(material)
+		if IDGenerator.get_material_number(material) == 3:
+			print("DIAMANT")
+			# Diamonds are requested, but are they available?
+			if ServerHandler.is_diamond_available():
+				reciept += material+""", and diamonds ARE luckily(!) available at the moment!<br>"""
+			else:
+				reciept += material + """, but those are unluckily not available at the moment...<br>"""
+		else:
+			reciept += material+"""<br>"""
+
+		reciept += """Color: """+next((string_input_list), "Unspecified")+ """<br><br>
+					<h3>Thank you for shopping at Gear 10 Productions. Hope the gear box suits your gearing needs. You can pay later!</h3>
+				</section>"""
+		return reciept
+
+	def get_printable_radiuses(string_gear_radius_list):
+		"""
+		input: gear radius list in string form
+		output: returns the radiuses in a nice looking fashion
+		"""
+		# Make a list instead of string
+		gear_radius_list = string_gear_radius_list[1:-1].split(",")
+
+		out = str(len(gear_radius_list))
+		try:
+			if(FusekiHandler.is_gearBox_in_db(gear_radius_list)):
+				out += ' gears are already created and on their way! Radiuses are as follows:<br>'
+			else:
+				out += ' gears are being created by brilliant college student Johanne. Radiuses are as follows:<br>'
+		except:
+			out += ' gears are ordered. Radiuses are as follows:<br>'
+
+		for i in range(len(gear_radius_list)):
+			out += ('Gear nr.' + str(i+1) + ': ' + str(gear_radius_list[i]) + ' [mm]<br>')
+		return out
+
+	def is_diamond_available():
+		if randint(0,9) > 4:
+			return 0
+		return 1
+
 
 if __name__ == '__main__':
 	server_class = HTTPServer
@@ -207,3 +278,13 @@ if __name__ == '__main__':
 	print(time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
 
 # Valeria
+
+# gear_radius_generator = (int(x) for x in string_gear_radius_list)
+		
+		# # Legg til elementene
+		# i = 0
+		# radius_list = []
+		# x = next(gear_radius_generator)
+		# while x != None:
+		# 	radius_list.append(x)
+		# 	x = next(gear_radius_generator)

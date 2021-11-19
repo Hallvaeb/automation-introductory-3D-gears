@@ -21,7 +21,7 @@ class IDGenerator():
     def create_order_id(fil):
         gearbox_id = IDGenerator.create_gearbox_id(fil) 
         customer_id = IDGenerator.create_customer_id(fil)
-        mat = IDGenerator.get_material_number(fil)
+        mat = IDGenerator.get_material_number(fil[4])
         col = IDGenerator.get_color_number(fil)
         order_id = gearbox_id + customer_id + mat + col
         return order_id
@@ -35,8 +35,7 @@ class IDGenerator():
         order_id = IDGenerator.create_order_id(fil)
         return gearbox_id, customer_id, order_id
 
-    def get_material_number(fil):
-        material = fil[4]
+    def get_material_number(material):
         material_number = {
             "Brass": 1,
             "Steel": 2,
