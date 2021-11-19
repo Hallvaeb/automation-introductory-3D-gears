@@ -63,7 +63,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
 
 			# Skjema for bestilling
-			form = FormCreator.create_form_private_customer()
+			form = FormCreator.create_form_private_customer_DUMMY(radius_list)
 			s.wfile.write(bytes(form, 'utf-8'))
 
 		elif path.find("/reciept") != -1:
@@ -127,7 +127,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 			for i in range(0, n_gears):
 				radius_list.append(int(pairs[i].split("=")[1]))
 
-			# Write up the page
+			# Write the page
 			out = head+"""<section><h1>GearBox - review </h1>
 					""" + str(n_gears) + ' gears chosen. Radiuses are as follows:<br><br>'
 			for i in range(n_gears):
@@ -135,17 +135,18 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes(out, 'utf-8'))
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
+			# Get and display the image
 			try:
-				gearBox_photo_path = FusekiHandler.get_photo_path_from_db(radius_list)
+				gearBox_photo_path = "" # FusekiHandler.get_photo_path_from_db(radius_list)
 				if(gearBox_photo_path != "-1"):
 					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
 				else:
 					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
 			except:
-				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
+				s.wfile.write(bytes("Something went wrong", 'utf-8')) 
 
-			# Skjema for bestilling
-			form = FormCreator.create_form_private_customer()
+			# Create a contact form for customer creation
+			form = FormCreator.create_form_private_customer(radius_list)
 			s.wfile.write(bytes(form, 'utf-8'))
 		
 		elif path.find("/reciept") != -1:
@@ -164,9 +165,10 @@ class ServerHandler(BaseHTTPRequestHandler):
 			param_line = post_body.decode()
 			pairs = param_line.split("&")
 
-			# [Company name, contact, phone, email, material, color, comments, radius_list[]]
+			# [Name, address, phone, email, material, color, radius_list[]]
 			form_input_list = [pairs[i].split("=")[1] for i in range(len(pairs))]
 			
+			# Remove weird signs in inefficient way
 			string_input_list = str(form_input_list).replace("+", " ").replace("%40", "@").replace("%21", "!").replace("%3D", "=").replace("%3F", "(").replace("%28", "(").replace("%29", ")").replace("%0D", "<br>").replace("%0A", "<br>")
 			reciept = """
 				<section>
@@ -177,6 +179,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 
 			s.wfile.write(bytes(reciept, 'utf-8'))
 			
+			# [Name, address, phone, email, material, color, radius_list[]]
 			FusekiHandler.add_order_to_db(form_input_list)
 
 	def create_header():
