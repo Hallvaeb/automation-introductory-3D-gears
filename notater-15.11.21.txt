@@ -13,3 +13,7 @@ bruker kodelinje 104, txt.replace(<SIDE>, pair[1]) for å bytte til rett paramet
 linje 77 skal være template-folderen med dfa-koden sitt navn etter \\templates\\navnet. 
 Skal og ha en DFA folder hvor dfakoden ligger.
 paramServer.py reads from template, writes to DFAs. NX reads DFAkode.
+
+
+
+DFA fil funker bra for 2 gir, mens .py tillater fler enn 2 på en enklere måte med at brukeren selv regner ut ratio.

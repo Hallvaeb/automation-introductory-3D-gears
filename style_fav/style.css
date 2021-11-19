@@ -1,0 +1,50 @@
+body {
+    min-width: 65ch;
+    max-width: 75ch;
+    line-height: 1.5;
+    margin: auto;
+    background-color: lightgrey;
+    font-family: Verdana;
+    font-size: 20px;
+    color: #323232;
+    text-align: center;
+    
+}
+
+header {
+    position: static;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    font-family: sans-serif;
+    padding-top: 30px;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 20pt;
+    margin: 1em 0em 1em 0em;
+}
+
+h3 {
+    font-size: 1em;
+    margin: 1em 0em 0em 0em;
+}
+
+#submitForm{
+    margin: 1em 0em 5em 0em;
+}
+
+#tax{
+    text-align: right;
+}
+form{
+    position: relative;
+    width: 400px;
+    height: 200px;
+    text-align: left;
+    margin-left: 30%;
+}
+#submitForm{
+    text-align: center;
+}
