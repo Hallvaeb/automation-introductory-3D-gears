@@ -1,5 +1,4 @@
 import requests 
-from template import TemplateCreator
 
 #--------------Vi spør Fuseki-serveren vha requests om etterspurt brukerinput/radiuskombinasjon finnes i databasen--------------#
 
@@ -43,20 +42,42 @@ class FusekiHandler(object):
 
 	# def is_customer_in_db():
 	# 	# query that ask if customer is in db 
+
 	# 	# retrun true if costumer in db
 
 	# def add_customer_to_db():
+		# EMAIL is unique ID
 	# 	# return 0
 
 
-	# def is_gearBox_in_db():
-	# 	# retrun true if gearBox in db
+	def is_gearBox_in_db(radius_list):
+		# retrun 0 if gearBox in db
+		string_radius_list = str(radius_list).replace(" ", "")
 		
+		QUERY = '''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		SELECT ?radiusList 
+		WHERE {
+			?GearBox kbe:hasRadiusList ?radiusList.
+		FILTER ( EXISTS { ?GearBox kbe:hasRadiusList "''' + string_radius_list + '''"} )
+		}
+		'''
+		PARAMS = {"query": QUERY}
+		r = requests.get(url = URL, params = PARAMS) 
+		print("Result:", r.text)
+		data = r.json()
+		
+		if (len(data['results']['bindings']) == 0 ):
+			return 1
+		return 0
+
 	# def add_gearBox_to_db():
 	# 	# return 0
 
 
-	# def add_order_to_db():
+	# def add_order_to_db(hele driten):
+		# ID = IDGenerator.get_order_id(gear_id, customer_id)
+
 
 	# def link_order_costumer()
 
@@ -88,7 +109,7 @@ class FusekiHandler(object):
 
 
 # Testing what the photo path is
-#print(FusekiRequest.get_photo_path_from_db("[20,30,40]"))
+#print(FusekiHandler.is_gearBox_in_db([20,30,40]))
 		
 
 
