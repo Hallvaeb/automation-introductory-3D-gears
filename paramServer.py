@@ -2,11 +2,12 @@
 #HTTP Server template / One parameter
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
+from form import FormCreator
 from fusekiRequest import FusekiRequest
-
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
+
 
 #file path of this python file
 # filePath = 'C:/Users/Eier/OneDrive/Studier/TMM4270/python'
@@ -20,7 +21,6 @@ class MyHandler(BaseHTTPRequestHandler):
 		s.end_headers()
 	
 	def do_GET(s):
-
 		"""Respond to a GET request."""
 		s.send_response(200)
 		s.send_header("Content-type", "text/html")
@@ -28,7 +28,6 @@ class MyHandler(BaseHTTPRequestHandler):
 		
 		head = MyHandler.create_header()
 		
-		# Check what the path is 
 		path = s.path
 		if path.find("/") != -1 and len(path) == 1:
 			site = head+"""
@@ -61,7 +60,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
 			try:
-				gearBox_photo_path = FusekiRequest.get_photo_path_from_db(radius_list)
+				gearBox_photo_path = "" #FusekiRequest.get_photo_path_from_db(radius_list)
 				if(gearBox_photo_path != "-1"):
 					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
 				else:
@@ -70,7 +69,7 @@ class MyHandler(BaseHTTPRequestHandler):
 				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
 
 			# Skjema for bestilling
-			form = MyHandler.create_form()
+			form = FormCreator.create_form_private_customer()
 			s.wfile.write(bytes(form, 'utf-8'))
 
 		elif path.find("/reciept") != -1:
@@ -152,7 +151,7 @@ class MyHandler(BaseHTTPRequestHandler):
 				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
 
 			# Skjema for bestilling
-			form = MyHandler.create_form()
+			form = FormCreator.create_form_private_customer()
 			s.wfile.write(bytes(form, 'utf-8'))
 		
 		elif path.find("/reciept") != -1:
@@ -174,7 +173,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			# [Company name, contact, phone, email, material, color, comments, radius_list[]]
 			form_input_list = [pairs[i].split("=")[1] for i in range(len(pairs))]
 			
-			string_input_list = str(form_input_list).replace("+", " ")
+			string_input_list = str(form_input_list).replace("+", " ").replace("%40", "@").replace("%21", "!").replace("%3D", "=").replace("%3F", "(").replace("%28", "(").replace("%29", ")").replace("%0D", "<br>").replace("%0A", "<br>")
 			reciept = """
 				<section>
 					<h1> ----------------------- ORDER SUMMARY ----------------------- </h1>
@@ -197,44 +196,6 @@ class MyHandler(BaseHTTPRequestHandler):
 				<link rel="stylesheet" href="style.css">
 			</head>
 			"""
-
-	def create_form():
-		# This returns a predefined form, used in post and get
-		return """<form action="/reciept" method="post">
-                <h2>We're ready to take your order!</h2>
-                <fieldset>
-                    <legend>Contact information</legend>
-                    <label for="company_name">Company name</label><br>
-                    <input type="text" name="company_name" placeholder="Company name" id="company_name"><br>
-                    <label for="contact_person">Contact person</label><br>
-                    <input type="text" name="contact_person" id="contact_person" placeholder="Contact person"><br>
-                    <label for="phone">Phone</label><br>
-                    <input type="number" name="phone" placeholder="Phone" id="phone"><br>
-                    <label for="email">E-mail</label><br>
-                    <input class="last" type="email" name="email" placeholder="E-mail" id="email"><br>
-                </fieldset>
-                <fieldset>
-                    <legend>Gear specifications</legend>
-                    <label for="material">Material </label><br>
-                    <select id= material" name= material">
-                        <option value="" disabled selected>Material</option>
-                        <option>Brass</option>
-                        <option>Steel</option>
-                        <option>Diamond</option>
-                        <option>Uncertain</option>
-                    </select><br>
-                    <label for="color">Color</label><br>
-                    <select id="color" name="color">
-                        <option value="" disabled selected>Color</option>
-                        <option>None</option>
-                        <option>Have it painted</option>
-                        <option>Uncertain</option>
-                    </select><br>
-                    <label for="comments">Other comments</label><br>
-                    <textarea class="last" name="comments" placeholder="Other comments" id="comments" rows="4" cols="50"></textarea><br>
-                </fieldset>
-                <input type="submit" value="Order now!" id="submit">
-            	</form></section>"""
 
 if __name__ == '__main__':
 	server_class = HTTPServer

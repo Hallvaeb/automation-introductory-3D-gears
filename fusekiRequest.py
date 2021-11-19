@@ -51,11 +51,11 @@ class FusekiRequest(object):
 		FusekiRequest.add_customer_to_db(order_list)
 		FusekiRequest.add_gearBox_to_db(order_list)
 
-	def add_customer_to_db():
-		#return true NÅR customer er lagt til 
+	# def add_customer_to_db():
+	# 	#return true NÅR customer er lagt til 
 
-	def add_gearBox_to_db():
-		#return true NÅR gearBox er lagt til
+	# def add_gearBox_to_db():
+	# 	#return true NÅR gearBox er lagt til
 
 
 
