@@ -1,14 +1,12 @@
-#fusekiRequest.py
-
-# importing the requests library
 import requests 
-from nxRequest import nxRequest
+from template_creator import TemplateCreator
 
 #--------------Vi spør Fuseki-serveren vha requests om etterspurt brukerinput/radiuskombinasjon finnes i databasen--------------#
 
 URL = "http://127.0.0.1:3030/kbe"
 
-class FusekiRequest(object):
+
+class FusekiHandler(object):
 
 	def get_photo_path_from_db(radius_list):
 		# Convert list to string format			
@@ -43,50 +41,50 @@ class FusekiRequest(object):
 		return photo_path
 
 
-	def is_customer_in_db():
-		# query that ask if customer is in db 
-		# retrun true if costumer in db
+	# def is_customer_in_db():
+	# 	# query that ask if customer is in db 
+	# 	# retrun true if costumer in db
 
-	def add_customer_to_db():
-		# return 0
+	# def add_customer_to_db():
+	# 	# return 0
 
 
-	def is_gearBox_in_db():
-		# retrun true if gearBox in db
+	# def is_gearBox_in_db():
+	# 	# retrun true if gearBox in db
 		
-	def add_gearBox_to_db():
-		# return 0
+	# def add_gearBox_to_db():
+	# 	# return 0
 
 
-	def add_order_to_db():
+	# def add_order_to_db():
 
-	def link_order_costumer()
+	# def link_order_costumer()
 
-	def link_order_gearBox():
+	# def link_order_gearBox():
 
 	
-	def create_order(order_list): 
-		#Input: [customer name, adress, phone, email, radius_list[]] 
-		if (!is_customer_in_db()): 
-			add_customer_to_db()
-		# check if customer is in db
-		# if true, nothing.
-		# if false, call add_customer_to_db
+	# def create_order(order_list): 
+	# 	#Input: [customer name, adress, phone, email, radius_list[]] 
+	# 	if (!is_customer_in_db()): 
+	# 		add_customer_to_db()
+	# 	# check if customer is in db
+	# 	# if true, nothing.
+	# 	# if false, call add_customer_to_db
 
-		if (!is_gearBox_in_db()): 
-			add_gearBox_to_db()
-		# check if gearBox is in db
-		# if true, nothing.
-		# if false, call add_gearBox_to_db
+	# 	if (!is_gearBox_in_db()): 
+	# 		add_gearBox_to_db()
+	# 	# check if gearBox is in db
+	# 	# if true, nothing.
+	# 	# if false, call add_gearBox_to_db
 		
-		# make order object with the customer and gearbox in db
-		# call templet_file_creator to make the order python-file with the new name
+	# 	# make order object with the customer and gearbox in db
+	# 	# call templet_file_creator to make the order python-file with the new name
 
 
-		# link Order with Customer, link Customer with Order.
-		# link Order with GearBox.
+	# 	# link Order with Customer, link Customer with Order.
+	# 	# link Order with GearBox.
 
-		# return 0 if order is added to db (if something else, something went wrong)
+	# 	# return 0 if order is added to db (if something else, something went wrong)
 
 
 # Testing what the photo path is

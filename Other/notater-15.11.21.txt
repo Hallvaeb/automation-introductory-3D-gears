@@ -32,3 +32,5 @@ How it works with our implementation:
             create: Order 
             C linked, G made and linked
         3. 
+
+#--------------Vi oppdaterer radiuslisten i py-filen som skal brukes for å lage GearBoxen i NX:--------------#

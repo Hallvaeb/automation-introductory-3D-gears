@@ -1,6 +1,5 @@
 
 
-
 class FormCreator(object):
     # Made a class so making multiple versions of the form and switching between is easy,
     # should one want for example separate forms for private or company customers...

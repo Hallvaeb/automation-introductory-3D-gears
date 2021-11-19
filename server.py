@@ -1,19 +1,13 @@
-#paramServer.py
-#HTTP Server template / One parameter
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 from form import FormCreator
-from fusekiRequest import FusekiRequest
+from fuseki import FusekiHandler
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
 
 
-#file path of this python file
-# filePath = 'C:/Users/Eier/OneDrive/Studier/TMM4270/python'
-
-# Handler of HTTP requests / responses
-class MyHandler(BaseHTTPRequestHandler):
+class ServerHandler(BaseHTTPRequestHandler):
 
 	def do_HEAD(s):
 		s.send_response(200)
@@ -26,7 +20,7 @@ class MyHandler(BaseHTTPRequestHandler):
 		s.send_header("Content-type", "text/html")
 		s.end_headers()
 		
-		head = MyHandler.create_header()
+		head = ServerHandler.create_header()
 		
 		path = s.path
 		if path.find("/") != -1 and len(path) == 1:
@@ -92,7 +86,7 @@ class MyHandler(BaseHTTPRequestHandler):
 		s.send_header("Content-type", "text/html")
 		s.end_headers()
 		
-		head = MyHandler.create_header()
+		head = ServerHandler.create_header()
 		
 		path = s.path
 			
@@ -142,7 +136,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
 			try:
-				gearBox_photo_path = FusekiRequest.get_photo_path_from_db(radius_list)
+				gearBox_photo_path = FusekiHandler.get_photo_path_from_db(radius_list)
 				if(gearBox_photo_path != "-1"):
 					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
 				else:
@@ -183,7 +177,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
 			s.wfile.write(bytes(reciept, 'utf-8'))
 			
-			FusekiRequest.add_order_to_db(form_input_list)
+			FusekiHandler.add_order_to_db(form_input_list)
 
 	def create_header():
 		# Returns a header
@@ -199,7 +193,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
 	server_class = HTTPServer
-	httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
+	httpd = server_class((HOST_NAME, PORT_NUMBER), ServerHandler)
 	print(time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
 	
 	try:
