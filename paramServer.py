@@ -168,20 +168,23 @@ class MyHandler(BaseHTTPRequestHandler):
 			# Get the arguments
 			content_len = int(s.headers.get('Content-Length'))
 			post_body = s.rfile.read(content_len)
-			param_line = post_body.decode("utf-8")
+			param_line = post_body.decode()
 			pairs = param_line.split("&")
+
+			# [Company name, contact, phone, email, material, color, comments, radius_list[]]
 			form_input_list = [pairs[i].split("=")[1] for i in range(len(pairs))]
+			
 			string_input_list = str(form_input_list).replace("+", " ")
 			reciept = """
 				<section>
 					<h1> ----------------------- ORDER SUMMARY ----------------------- </h1>
-					"""+string_input_list+ """<br><br> 
+					"""+string_input_list+ """<br><br>
 					Hope you will be happy with your purchase... You can pay later!
 				</section>"""
 
 			s.wfile.write(bytes(reciept, 'utf-8'))
 			
-			# FusekiRequest.add_order()
+			FusekiRequest.add_order_to_db(form_input_list)
 
 	def create_header():
 		# Returns a header
@@ -196,6 +199,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			"""
 
 	def create_form():
+		# This returns a predefined form, used in post and get
 		return """<form action="/reciept" method="post">
                 <h2>We're ready to take your order!</h2>
                 <fieldset>
@@ -222,7 +226,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     <label for="color">Color</label><br>
                     <select id="color" name="color">
                         <option value="" disabled selected>Color</option>
-                        <option>Default</option>
+                        <option>None</option>
                         <option>Have it painted</option>
                         <option>Uncertain</option>
                     </select><br>
