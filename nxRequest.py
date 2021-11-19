@@ -9,7 +9,6 @@ class nxRequest():
         return "C:/Users/Eier/OneDrive/Studier/TMM4270/TMM4270_A3/Product_images/test.jpg"#run_in_nx(GearTrain.makeGearTrain(radius_list))
 
 
-
     # #--------------Vi oppdaterer radiusene i py-filen som skal brukes for å lage GearBoxen i NX:--------------#
 
 	# # Reading the template file

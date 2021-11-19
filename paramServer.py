@@ -27,8 +27,14 @@ class MyHandler(BaseHTTPRequestHandler):
 		s.end_headers()
 		
 		fav = '<link rel="icon" href="./style_fav/favicon_10.ico" type="image/x-icon"/>'
-		style = '<link rel="stylesheet" href="style.css">'
-		head = '<HTML lang="en"> <head>'+fav+style+'<title> Gearbox </title></head>'
+		head =	"""
+			<HTML lang="en"> 
+			<head>
+				<title> Gearbox</title>
+				<link rel="icon" href="./style_fav/favicon_10.ico" type="image/x-icon"/>
+				<link rel="stylesheet" href="style.css">
+			</head>
+			"""
 		
 		# Check what the path is 
 		path = s.path
@@ -37,10 +43,11 @@ class MyHandler(BaseHTTPRequestHandler):
 			<section>
 				<h2>GearBox - building [1/2]</h2>
 				<form action = "/setRadius" method="post">
-				<label for="nGears">How many gears do you want?</label><br><br>
-				<input pattern="0123456789" type="number" name="nGears" id="nGears" autofocus required><br><br>
-				<input type="submit" value="submit"><br>
-				</form></section>
+					<label for="nGears">How many gears do you want?</label><br><br>
+					<input pattern="0123456789" type="number" name="nGears" id="nGears" autofocus required><br><br>
+					<input type="submit" value="submit"><br>
+				</form>
+			</section>
 			"""
 			s.wfile.write(bytes(site, 'utf-8'))
 
@@ -140,14 +147,14 @@ class MyHandler(BaseHTTPRequestHandler):
 			string_radius_list = str(radius_list).replace(" ", "")
 
 
-			# try:
-			gearBox_photo_path = FusekiRequest.get_gear_box(string_radius_list)
-			# if(gearBox_photo_path != "-1"):
-			s.wfile.write(bytes('<img src="'+gearBox_photo_path+'" alt= "Photo missing...">', 'utf-8'))
-			# else:
-			# 	s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
-			# except:
-			# 	s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
+			try:
+				gearBox_photo_path = FusekiRequest.get_photo_path_from_db(string_radius_list)
+				if(gearBox_photo_path != "-1"):
+					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
+				else:
+					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
+			except:
+				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
 
 			# Skjema for bestilling
 			form = """<form action="/reciept">
@@ -187,6 +194,18 @@ class MyHandler(BaseHTTPRequestHandler):
             	</form></section>"""
 			s.wfile.write(bytes(form, 'utf-8'))
 	
+		elif path.find("/reciept") != -1:
+			# Get the arguments
+			content_len = int(s.headers.get('Content-Length'))
+			post_body = s.rfile.read(content_len)
+			param_line = post_body.decode()
+			pairs = param_line.split("&")
+			nGears = len(pairs)
+			for i in range(0, nGears):
+				radius_list.append(int(pairs[i].split("=")[1]))
+
+			FusekiRequest.add_order()
+
 
 if __name__ == '__main__':
 	server_class = HTTPServer
