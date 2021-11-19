@@ -42,6 +42,21 @@ class FusekiRequest(object):
 
 		return photo_path
 
+	def add_order_to_db(order_list): #Input: [company name, contact, phone, email, material, color, comments, radius_list[]]
+		#checks if customer and/or gearBox already is in the database. If so,
+		# 0 ingen lagt til, fordi begge var der fra før 
+		#
+		
+		
+		FusekiRequest.add_customer_to_db(order_list)
+		FusekiRequest.add_gearBox_to_db(order_list)
+
+	def add_customer_to_db():
+		#return true NÅR customer er lagt til 
+
+	def add_gearBox_to_db():
+		#return true NÅR gearBox er lagt til
+
 
 
 # Testing what the photo path is
