@@ -19,3 +19,5 @@ paramServer.py reads from template, writes to DFAs. NX reads DFAkode.
 DFA fil funker bra for 2 gir, mens .py tillater fler enn 2 på en enklere måte med at brukeren selv regner ut ratio.
 
 https://docs.google.com/document/d/1Jqvbf_SOH34AUro8LcXLjsI_6lJ-ASlJmLK8Xi-L9Pw/edit?fbclid=IwAR3YO70rXVGU7pXdxN446GDcOCQojmXxq1g81rvmNAqgWGMxYa3-ePRTJDc
+
+Legge alle "statiske" filer i en static folder istedenfor distribuert?

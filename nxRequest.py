@@ -5,7 +5,7 @@
 class nxRequest():
     
     # OrderNumber for each order
-    def orderNum(): #ellernoe, se på det senere
+    # def orderNum(): #ellernoe, se på det senere
 
 
     def make_gear_box_in_NX(radius_list):
