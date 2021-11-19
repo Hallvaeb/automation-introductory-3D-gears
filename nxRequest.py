@@ -1,12 +1,13 @@
-# from GearTrain import GearTrain
+import Date
 
         #--------------Vi oppdaterer radiuslisten i py-filen som skal brukes for å lage GearBoxen i NX:--------------#
 
 class nxRequest():
     
     # OrderNumber for each order
-    def orderNum(): #ellernoe, se på det senere
-
+    def orderNum():
+        orderNumber = Date.now()
+        return orderNumber
 
     def make_gear_box_in_NX(radius_list):
         # Reading the template file
@@ -15,11 +16,12 @@ class nxRequest():
         print("before:", txt)
         f.close()
 
-        # #Writing a new temporary file
-        # f = open("C:\\Users\\johagl\\TMM4270_A3\\Product_orders\\gearBox_temporary"+str(orderNumber)+".py", "w")
+        #Writing a new temporary file.
+        f = open("C:\\Users\\johagl\\TMM4270_A3\\Product_orders\\gearBox_temporary"+str(orderNum())+".py", "w")
 
-        # #Replacement section, replace the old gear_radiuses with the ones from the use input
-        # txt_replaced = txt.replace(<RADIUS_LIST>, radius_list)
-        # #change it to the new radius 
-        # f.write(txt_replaced)
-        # f.close()
+        #Replacement section, replace the old gear_radiuses with the ones from the use input
+        txt_replaced = txt.replace("<RADIUS_LIST>", radius_list)
+        #change it to the new radius 
+        f.write(txt_replaced)
+        print("after:", txt_replaced)
+        f.close()
