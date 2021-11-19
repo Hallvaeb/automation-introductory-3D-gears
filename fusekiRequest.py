@@ -6,20 +6,18 @@ from nxRequest import nxRequest
 
 #--------------Vi spør Fuseki-serveren vha requests om etterspurt brukerinput/radiuskombinasjon finnes i databasen--------------#
 
-
 URL = "http://127.0.0.1:3030/kbe"
 
 class FusekiRequest(object):
 
-	def get_photo_path_from_db(radius_list):
+	def get_photo_path_from_db(string_radius_list):
 		PARAMS = {'query':"""
-		PREFIX kbe:<http://www.my-kbe.com/shapes.owl#>
-		SELECT ?gear ?diameter
-		WHERE {
-		?gear kbe:hasDiameter ?diameter.
-		FILTER (?"""+
-		str(radius_list[i]*2)+
-		""">50) 
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+	SELECT ?photoPath
+	WHERE {
+		?GearBox kbe:hasPhotoPath ?photoPath.
+  		?GearBox kbe:hasRadiusList ?radiusList.
+	FILTER (?radiusList =""" + string_radius_list + """) 
 		}
 		"""}
 		# Spørre databasen, dette jobber Johanne på.
@@ -44,36 +42,16 @@ class FusekiRequest(object):
 		return photo_path
 		
 
+	# sending get request and saving the response as response object 
+	r = requests.get(url = URL, params = PARAMS) 
+
+	# Checking the result
+	print("Result:", r.text)
+	data = r.json()
+	print("JSON:", data)
+	#Checking the value of the parameter
+	#print("Data:", data['results']['bindings'][0]['diameter']['value'])
 
 
 
-
-
-	# # sending get request and saving the response as response object 
-	# r = requests.get(url = URL, params = PARAMS) 
-
-	# # Checking the result
-	# print("Result:", r.text)
-	# data = r.json()
-	# print("JSON:", data)
-	# #Checking the value of the parameter
-	# #print("Data:", data['results']['bindings'][0]['diameter']['value'])
-
-	# #--------------Vi oppdaterer radiusene i py-filen som skal brukes for å lage GearBoxen i NX:--------------#
-
-	# # Reading the template file
-	# f = open("C:\\Users\\johagl\\auto\\templates\\gearBox_template.py", "r")
-	# txt = f.read()
-	# f.close()
-
-	# print("before:", txt)
-
-	# #Writing a new temporary file
-	# f = open("C:\\Users\\johagl\\auto\\templates\\gearBox_temporary"+str(orderNumber)+".py", "w")
-
-	# for i in range(\\BRUKERINPUT//): #ENDRES!!!!!!!!!
-	# 	#Replacement section, replace the old gear_radiuses with the ones from the use input
-	# 	txt = txt.replace(gear_radius_list[i], radius_list[i])
-	# 	#change it to the new radius 
-	# 	f.write(txt)
-	# f.close()
+# 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
