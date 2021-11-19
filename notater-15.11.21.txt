@@ -21,3 +21,14 @@ DFA fil funker bra for 2 gir, mens .py tillater fler enn 2 på en enklere måte 
 https://docs.google.com/document/d/1Jqvbf_SOH34AUro8LcXLjsI_6lJ-ASlJmLK8Xi-L9Pw/edit?fbclid=IwAR3YO70rXVGU7pXdxN446GDcOCQojmXxq1g81rvmNAqgWGMxYa3-ePRTJDc
 
 Legge alle "statiske" filer i en static folder istedenfor distribuert?
+
+
+How it works with our implementation:
+    Customer (C) orders a Gearbox (G), 
+        1. C and G in db: 
+            create: Order
+            link: C and G, C and O, O -> G
+        2. C in db, not G: 
+            create: Order 
+            C linked, G made and linked
+        3. 
