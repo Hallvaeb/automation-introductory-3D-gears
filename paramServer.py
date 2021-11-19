@@ -143,12 +143,8 @@ class MyHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes(out, 'utf-8'))
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
-			# Convert list to wanted format			
-			string_radius_list = str(radius_list).replace(" ", "")
-
-
 			try:
-				gearBox_photo_path = FusekiRequest.get_photo_path_from_db(string_radius_list)
+				gearBox_photo_path = FusekiRequest.get_photo_path_from_db(radius_list)
 				if(gearBox_photo_path != "-1"):
 					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
 				else:

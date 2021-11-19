@@ -10,47 +10,44 @@ URL = "http://127.0.0.1:3030/kbe"
 
 class FusekiRequest(object):
 
-	def get_photo_path_from_db(string_radius_list):
-		PARAMS = {'query':"""
+	def get_photo_path_from_db(radius_list):
+		# Convert list to string format			
+		string_radius_list = str(radius_list).replace(" ", "")
+
+		QUERY = '''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-	SELECT ?photoPath
-	WHERE {
-		?GearBox kbe:hasPhotoPath ?photoPath.
-  		?GearBox kbe:hasRadiusList ?radiusList.
-	FILTER (?radiusList =""" + string_radius_list + """) 
+		SELECT ?photoPath
+		WHERE {
+			?GearBox kbe:hasPhotoPath ?photoPath.
+			?GearBox kbe:hasRadiusList ?radiusList
+		FILTER (?radiusList = "''' + string_radius_list + '''") 
 		}
-		"""}
-		# Spørre databasen, dette jobber Johanne på.
-		# Gir en photo
-		# return photo_path
+		'''
+		PARAMS = {"query": QUERY}
+		# Sending get request and saving the response as response object 
+		r = requests.get(url = URL, params = PARAMS) 
 
-	@staticmethod
-	def get_gear_box(radius_list):
+		# Checking the result
+		#print("Result:", r.text)
+		data = r.json()
+		#print("JSON:", data)
 		
-		# photo_path = get_photo_path_from_db(radius_list):
-		# # if(photo_path == "/no_path"):
-		# 	# # Object not found in db
-		# 	# photo_path = nxRequest.make_gear_box_in_NX(radius_list)
-		# 	return photo_path
-		# else():
-			# Check if path is a path and return it
-			# return photo_path
+		# Checking the value of the parameter
+		#print("Data:", data['results']['bindings'][0]['photoPath']['value'])	
+		
+		# return the photopath of the photo of this gearbox
+		photo_path = data['results']['bindings'][0]['photoPath']['value']
 
-		print("getGearBox")
-		photo_path = nxRequest.make_gear_box_in_NX(radius_list)
-		# add_to_fuseki_db(photo_path)
+		# Validate photo path
+
 		return photo_path
+
+
+
+# Testing what the photo path is
+#print(FusekiRequest.get_photo_path_from_db("[20,30,40]"))
 		
 
-	# sending get request and saving the response as response object 
-	r = requests.get(url = URL, params = PARAMS) 
-
-	# Checking the result
-	print("Result:", r.text)
-	data = r.json()
-	print("JSON:", data)
-	#Checking the value of the parameter
-	#print("Data:", data['results']['bindings'][0]['diameter']['value'])
 
 
 
