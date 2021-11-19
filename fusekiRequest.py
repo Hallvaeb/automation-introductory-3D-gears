@@ -42,21 +42,51 @@ class FusekiRequest(object):
 
 		return photo_path
 
-	def add_order_to_db(order_list): #Input: [company name, contact, phone, email, material, color, comments, radius_list[]]
-		#checks if customer and/or gearBox already is in the database. If so,
-		# 0 ingen lagt til, fordi begge var der fra før 
-		#
-		
-		
-		FusekiRequest.add_customer_to_db(order_list)
-		FusekiRequest.add_gearBox_to_db(order_list)
+
+	def is_customer_in_db():
+		# query that ask if customer is in db 
+		# retrun true if costumer in db
 
 	def add_customer_to_db():
-		#return true NÅR customer er lagt til 
+		# return 0
 
+
+	def is_gearBox_in_db():
+		# retrun true if gearBox in db
+		
 	def add_gearBox_to_db():
-		#return true NÅR gearBox er lagt til
+		# return 0
 
+
+	def add_order_to_db():
+
+	def link_order_costumer()
+
+	def link_order_gearBox():
+
+	
+	def create_order(order_list): 
+		#Input: [customer name, adress, phone, email, radius_list[]] 
+		if (!is_customer_in_db()): 
+			add_customer_to_db()
+		# check if customer is in db
+		# if true, nothing.
+		# if false, call add_customer_to_db
+
+		if (!is_gearBox_in_db()): 
+			add_gearBox_to_db()
+		# check if gearBox is in db
+		# if true, nothing.
+		# if false, call add_gearBox_to_db
+		
+		# make order object with the customer and gearbox in db
+		# call templet_file_creator to make the order python-file with the new name
+
+
+		# link Order with Customer, link Customer with Order.
+		# link Order with GearBox.
+
+		# return 0 if order is added to db (if something else, something went wrong)
 
 
 # Testing what the photo path is
