@@ -1,5 +1,5 @@
 import requests 
-from template_creator import TemplateCreator
+from template import TemplateCreator
 
 #--------------Vi spør Fuseki-serveren vha requests om etterspurt brukerinput/radiuskombinasjon finnes i databasen--------------#
 
