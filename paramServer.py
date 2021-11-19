@@ -26,7 +26,7 @@ class MyHandler(BaseHTTPRequestHandler):
 		s.send_header("Content-type", "text/html")
 		s.end_headers()
 		
-		fav = '<link rel=\'icon\' href=\'favicon_10.ico\' type=\'image/x-icon\'/>'
+		fav = '<link rel="icon" href="./style_fav/favicon_10.ico" type="image/x-icon"/>'
 		style = '<link rel="stylesheet" href="style.css">'
 		head = '<HTML lang="en"> <head>'+fav+style+'<title> Gearbox </title></head>'
 		
@@ -136,8 +136,12 @@ class MyHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes(out, 'utf-8'))
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
+			# Convert list to wanted format			
+			string_radius_list = str(radius_list).replace(" ", "")
+
+
 			# try:
-			gearBox_photo_path = FusekiRequest.get_gear_box(radius_list)
+			gearBox_photo_path = FusekiRequest.get_gear_box(string_radius_list)
 			# if(gearBox_photo_path != "-1"):
 			s.wfile.write(bytes('<img src="'+gearBox_photo_path+'" alt= "Photo missing...">', 'utf-8'))
 			# else:
