@@ -1,7 +1,7 @@
 from Shapes.Gear import Gear
 
 #----------------------------------------------------------------------#
-gear_radius_list = <RADIUS_LIST>
+gear_radius_list = [50, 100]
 #----------------------------------------------------------------------#
 
 n_gears = len(gear_radius_list)

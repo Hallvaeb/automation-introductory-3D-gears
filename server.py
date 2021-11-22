@@ -20,14 +20,15 @@ class ServerHandler(BaseHTTPRequestHandler):
 	
 	def do_GET(s):
 		"""Respond to a GET request."""
-		s.send_response(200)
-		s.send_header("Content-type", "text/html")
-		s.end_headers()
 		
 		head = ServerHandler.create_header()
 		
 		path = s.path
 		if path.find("/") != -1 and len(path) == 1:
+			s.send_response(200)
+			s.send_header("Content-type", "text/html")
+			s.end_headers()
+		
 			site = head+"""
 			<section>
 				<h1>WELCOME TO GEAR 10 Productions </h1>
@@ -45,12 +46,16 @@ class ServerHandler(BaseHTTPRequestHandler):
 		# 	s.wfile.write(bytes(fav,'utf-8'))
 			
 		elif path.find("/review") != -1:
+			s.send_response(200)
+			s.send_header("Content-type", "text/html")
+			s.end_headers()
+		
 			# Reset list of radiuses
 			radius_list = [50, 100, 150]
 
 			n_gears = len(radius_list)
 
-			# Write up the page
+			# Write the page
 			out = head+"""<section><h1>GearBox - review </h1>
 					""" + str(n_gears) + ' gears chosen. Radiuses are as follows:<br><br>'
 			for i in range(n_gears):
@@ -61,7 +66,9 @@ class ServerHandler(BaseHTTPRequestHandler):
 			try:
 				gearBox_photo_path = "" #FusekiRequest.get_photo_path_from_db(radius_list)
 				if(gearBox_photo_path != "-1"):
-					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
+					print("Asking for image...")
+					s.wfile.write(bytes('<img src="/product.png" alt= "Photo missing...">', 'utf-8'))
+					print("The image has been written?")
 				else:
 					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
 			except:
@@ -71,7 +78,25 @@ class ServerHandler(BaseHTTPRequestHandler):
 			form = FormCreator.create_form_private_customer_DUMMY(radius_list)
 			s.wfile.write(bytes(form, 'utf-8'))
 
+		elif path.find("/product.png") != -1:
+			# Make right headers
+			s.send_response(200)
+			s.send_header("Content-type", "image/png")
+			s.end_headers()
+			#Read the file
+			#Write file.
+			print("breader opening..")
+			bReader = open("./Product_images/gear250500.png", "rb")
+			print("breader reading..")
+			theImg = bReader.read()
+			print("breader has written..")
+			s.wfile.write(theImg)
+
 		elif path.find("/reciept") != -1:
+			s.send_response(200)
+			s.send_header("Content-type", "text/html")
+			s.end_headers()
+		
 			thankyou = head+"""
 			<section><h1>Aii, you can't do that! The order was made but now you lost your reciept! </h1><br>
 			"""
@@ -79,6 +104,10 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes('<a href="/"><button>Make another!</button></a>', 'utf-8'))
 
 		else:
+			s.send_response(200)
+			s.send_header("Content-type", "text/html")
+			s.end_headers()
+		
 			s.wfile.write(bytes(head, 'utf-8'))
 			s.wfile.write(bytes("<body><p>The path: " + path + "</p>", "utf-8"))
 			s.wfile.write(bytes('</body></html>', "utf-8"))
@@ -139,18 +168,19 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes(out, 'utf-8'))
 			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
-			# Get and display the image
 			try:
-				gearBox_photo_path = "" # FusekiHandler.get_photo_path_from_db(radius_list)
+				gearBox_photo_path = "" #FusekiRequest.get_photo_path_from_db(radius_list)
 				if(gearBox_photo_path != "-1"):
-					s.wfile.write(bytes('<img src="./Product_images/test.jpg" alt= "Photo missing...">', 'utf-8'))
+					print("Asking for image...")
+					s.wfile.write(bytes('<img src="/product.png" alt= "Photo missing...">', 'utf-8'))
+					print("The image has been written?")
 				else:
 					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
 			except:
-				s.wfile.write(bytes("Something went wrong", 'utf-8')) 
+				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
 
-			# Create a contact form for customer creation
-			form = FormCreator.create_form_private_customer(radius_list)
+			# Skjema for bestilling
+			form = FormCreator.create_form_private_customer_DUMMY(radius_list)
 			s.wfile.write(bytes(form, 'utf-8'))
 		
 		elif path.find("/reciept") != -1:

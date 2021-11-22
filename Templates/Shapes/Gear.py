@@ -1,4 +1,4 @@
-from Cylinder import Cylinder
+import Cylinder
 from Block_2 import Block_2
 import NXOpen
 import math
