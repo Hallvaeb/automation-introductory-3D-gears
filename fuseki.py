@@ -40,16 +40,16 @@ class FusekiHandler(object):
 		return photo_path
 
 
-	def is_customer_in_db(customer_email):
+	def is_customer_in_db(customer_phone):
 		# query that ask if customer is in db 
 		# retrun 0 if customer in db
 		
 		QUERY = '''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-		SELECT ?customerEmail 
+		SELECT ?customerPhone 
 		WHERE {
-			?Customer kbe:hasEmail ?customerEmail.
-		FILTER ( EXISTS { ?Customer kbe:hasEmail "''' + customer_email + '''"} )
+			?Customer kbe:hasPhone ?customerPhone.
+		FILTER ( EXISTS { ?Customer kbe:hasPhone "''' + str(customer_phone) + '''"} )
 		}
 		'''
 		PARAMS = {"query": QUERY}
@@ -60,10 +60,30 @@ class FusekiHandler(object):
 		if (len(data['results']['bindings']) == 0 ):
 			return 1
 		return 0
+		
+		
+		
+	def add_customer_to_db(customer_list):
+		# INPUT customer_list: [Name, address, phone, email, material, color, radius_list[]]
+	 	# return 0 when added
+		
+		UPDATE = ('''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		INSERT {
+  			kbe:''' + str(customer_list[2]) + ''' a kbe:Customer.
+  			kbe:''' + str(customer_list[2]) + ''' kbe:hasName "''' + str(customer_list[0]) + '''".
+  			kbe:''' + str(customer_list[2]) + ''' kbe:hasAddress "''' + str(customer_list[1]) + '''".
+  			kbe:''' + str(customer_list[2]) + ''' kbe:hasPhone "''' + str(customer_list[2]) + '''".
+  			kbe:''' + str(customer_list[2]) + ''' kbe:hasEmail "''' + str(customer_list[3]) + '''"
+		}
+		WHERE {
+		}
+		''')
 
-	# def add_customer_to_db():
-		# EMAIL is unique ID
-	# 	# return 0
+		PARAMS = {"update": UPDATE}
+		r = requests.post(url = URL+"/update", data = PARAMS) 
+		
+		return FusekiHandler.is_customer_in_db(customer_list[2])
 
 
 	def is_gearBox_in_db(radius_list):
@@ -92,7 +112,7 @@ class FusekiHandler(object):
 	
 
 	def add_gearBox_to_db(gearBox_list):
-		# INPUT gearBox_list: [gearBoxID, radiusList, photoPath]
+		# INPUT gearBox_list: [gearBox_id, radiusList, photoPath, color, material]
 	 	# return 0 when added
 		new_gearBox_list = gearBox_list#.replace(" ", "").replace("'", "")
 
@@ -101,7 +121,9 @@ class FusekiHandler(object):
 		INSERT {
   			kbe:''' + str(new_gearBox_list[0]) + ''' a kbe:GearBox.
   			kbe:''' + str(new_gearBox_list[0]) + ''' kbe:hasRadiusList "''' + str(new_gearBox_list[1]) + '''".
-  			kbe:''' + str(new_gearBox_list[0]) + ''' kbe:hasPhotoPath "''' + str(new_gearBox_list[2]) + '''"
+  			kbe:''' + str(new_gearBox_list[0]) + ''' kbe:hasPhotoPath "''' + str(new_gearBox_list[2]) + '''".
+  			kbe:''' + str(new_gearBox_list[0]) + ''' kbe:hasColor "''' + str(new_gearBox_list[3]) + '''".
+  			kbe:''' + str(new_gearBox_list[0]) + ''' kbe:hasMaterial "''' + str(new_gearBox_list[4]) + '''"
 		}
 		WHERE {
 		}
@@ -116,7 +138,22 @@ class FusekiHandler(object):
 		# ID = IDGenerator.get_order_id(gear_id, customer_id)
 
 
-	# def link_order_costumer()
+	# def link_order_costumer(order_list):
+	# 	# INPUT: [Name, address, phone, email, material, color, radius_list[]]
+
+	# 	UPDATE = ('''
+	# 	PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+	# 	INSERT {
+  	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' a kbe:Order.
+  	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' kbe:hasCustomer "''' + str(id.create_customer_id(order_list)) + '''".
+  	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' kbe:hasGearBox "''' + str(id.create_gearbox_id(order_list)) + '''"
+	# 	}
+	# 	WHERE {
+	# 	}
+	# 	''')
+
+	# 	PARAMS = {"update": UPDATE}
+	# 	r = requests.post(url = URL+"/update", data = PARAMS)
 
 	# def link_order_gearBox():
 
@@ -145,9 +182,12 @@ class FusekiHandler(object):
 	# 	# return 0 if order is added to db (if something else, something went wrong)
 
 
-# Testing what the photo path is
-print(FusekiHandler.add_gearBox_to_db(["HallvardssGear",["tall"],"HallvardsGearPath"]))
+print(FusekiHandler.add_customer_to_db(["Frida Frosk", "Dammen", 46666666,"frida@mail.com"]))
+print(FusekiHandler.add_gearBox_to_db(["JGsitt", [40,506,700], "liksomlink", "ROSA<3", "Diamant"]))
+
+
 #  PROBLEM: RadiusList må gies inn som string, ikke list. Fordi list ikke har .replace muligheter.
+#  LØSNING: RadiusList gies inn som list, driter i å replace mellomrommene. :)) Må inn i IDGENERATOR og endre litt der.
 # MERK: FÅR LOV TIL Å LEGGE TIL FLERE GEARS MED SAMME GEARBOXID, MEN DET BLIR IKKE DUPLIKATER AV DE!
 
 
