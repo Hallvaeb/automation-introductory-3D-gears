@@ -8,7 +8,7 @@ body {
     font-size: 20px;
     color: #323232;
     text-align: center;
-    
+    padding-bottom: 50px;
 }
 
 header {
@@ -18,12 +18,12 @@ header {
     transform: translate(-50%, -50%);
     font-family: sans-serif;
     padding-top: 30px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 h1 {
     font-size: 20pt;
-    margin: 1em 0em 1em 0em;
+    margin: 1em 0em 0em 0em;
 }
 
 h3 {

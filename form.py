@@ -11,7 +11,7 @@ class FormCreator(object):
                     <fieldset>
                         <legend>Contact information</legend>
                         <label for="customer_name">Full name</label><br>
-                        <input type="text" name="customer_name" id="customer_name" placeholder="Your name, sir" autofocus><br>
+                        <input type="text" name="customer_name" id="customer_name" placeholder="Your name, sir" ><br>
                         <label for="address">Address</label><br>
                         <input type="text" name="address" placeholder=".. For delivery, not visits.." id="address"><br>
                         <label for="phone">Phone</label><br>
