@@ -19,10 +19,10 @@ class IDGenerator():
         return str_list
 
     def create_order_id(fil):
-        gearbox_id = IDGenerator.create_gearbox_id(fil) 
-        customer_id = IDGenerator.create_customer_id(fil)
-        mat = IDGenerator.get_material_number(fil[4])
-        col = IDGenerator.get_color_number(fil)
+        gearbox_id = str(IDGenerator.create_gearbox_id(fil))
+        customer_id = str(IDGenerator.create_customer_id(fil))
+        mat = str(IDGenerator.get_material_number(fil[4]))
+        col = str(IDGenerator.get_color_number(fil))
         order_id = gearbox_id + customer_id + mat + col
         return order_id
        

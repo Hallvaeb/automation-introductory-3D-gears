@@ -1,4 +1,9 @@
-import requests 
+import requests
+
+from id import IDGenerator 
+
+# TING Å SE PÅ:
+# 1. Må legge inn photopath i order_list dersom den skal brukes itl å legge inn gear via add_gearBox_in_db
 
 #--------------Vi spør Fuseki-serveren vha requests om etterspurt brukerinput/radiuskombinasjon finnes i databasen--------------#
 
@@ -54,7 +59,6 @@ class FusekiHandler(object):
 		'''
 		PARAMS = {"query": QUERY}
 		r = requests.get(url = URL, params = PARAMS) 
-		#print("Result:", r.text)
 		data = r.json()
 		
 		if (len(data['results']['bindings']) == 0 ):
@@ -62,19 +66,18 @@ class FusekiHandler(object):
 		return 0
 		
 		
-		
-	def add_customer_to_db(customer_list):
+	def add_customer_to_db(order_list):
 		# INPUT customer_list: [Name, address, phone, email, material, color, radius_list[]]
 	 	# return 0 when added
 		
 		UPDATE = ('''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
 		INSERT {
-  			kbe:''' + str(customer_list[2]) + ''' a kbe:Customer.
-  			kbe:''' + str(customer_list[2]) + ''' kbe:hasName "''' + str(customer_list[0]) + '''".
-  			kbe:''' + str(customer_list[2]) + ''' kbe:hasAddress "''' + str(customer_list[1]) + '''".
-  			kbe:''' + str(customer_list[2]) + ''' kbe:hasPhone "''' + str(customer_list[2]) + '''".
-  			kbe:''' + str(customer_list[2]) + ''' kbe:hasEmail "''' + str(customer_list[3]) + '''"
+  			kbe:''' + str(order_list[2]) + ''' a kbe:Customer.
+  			kbe:''' + str(order_list[2]) + ''' kbe:hasName "''' + str(order_list[0]) + '''".
+  			kbe:''' + str(order_list[2]) + ''' kbe:hasAddress "''' + str(order_list[1]) + '''".
+  			kbe:''' + str(order_list[2]) + ''' kbe:hasPhone "''' + str(order_list[2]) + '''".
+  			kbe:''' + str(order_list[2]) + ''' kbe:hasEmail "''' + str(order_list[3]) + '''"
 		}
 		WHERE {
 		}
@@ -83,7 +86,7 @@ class FusekiHandler(object):
 		PARAMS = {"update": UPDATE}
 		r = requests.post(url = URL+"/update", data = PARAMS) 
 		
-		return FusekiHandler.is_customer_in_db(customer_list[2])
+		return FusekiHandler.is_customer_in_db(order_list[2])
 
 
 	def is_gearBox_in_db(radius_list):
@@ -103,7 +106,6 @@ class FusekiHandler(object):
 		'''
 		PARAMS = {"query": QUERY}
 		r = requests.get(url = URL, params = PARAMS) 
-		#print("Result:", r.text)
 		data = r.json()
 		
 		if (len(data['results']['bindings']) == 0 ):
@@ -112,6 +114,8 @@ class FusekiHandler(object):
 	
 
 	def add_gearBox_to_db(gearBox_list):
+		# order_list: [Name, address, phone, email, material, color, radius_list[]]
+		
 		# INPUT gearBox_list: [gearBox_id, radiusList, photoPath, color, material]
 	 	# return 0 when added
 		new_gearBox_list = gearBox_list#.replace(" ", "").replace("'", "")
@@ -138,15 +142,33 @@ class FusekiHandler(object):
 		# ID = IDGenerator.get_order_id(gear_id, customer_id)
 
 
-	# def link_order_costumer(order_list):
+	def link_order_costumer(order_list):
+		# INPUT: [Name, address, phone, email, material, color, radius_list[]]
+
+		UPDATE = ('''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		INSERT {
+  			kbe:''' + str(IDGenerator.create_order_id(order_list)) + ''' a kbe:Order.
+			kbe:''' + str(IDGenerator.create_order_id(order_list)) + ''' kbe:hasCustomer "''' + str(IDGenerator.create_customer_id(order_list)) + '''".
+  			
+			kbe:''' + str(IDGenerator.create_customer_id(order_list)) + ''' a kbe:Customer.
+			kbe:''' + str(IDGenerator.create_customer_id(order_list)) + ''' kbe:hasOrder "''' + str(IDGenerator.create_order_id(order_list)) + '''"
+		}
+		WHERE {
+		}
+		''')
+
+		PARAMS = {"update": UPDATE}
+		r = requests.post(url = URL+"/update", data = PARAMS)
+
+	# def link_order_gearBox(order_list):
 	# 	# INPUT: [Name, address, phone, email, material, color, radius_list[]]
 
 	# 	UPDATE = ('''
 	# 	PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
 	# 	INSERT {
   	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' a kbe:Order.
-  	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' kbe:hasCustomer "''' + str(id.create_customer_id(order_list)) + '''".
-  	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' kbe:hasGearBox "''' + str(id.create_gearbox_id(order_list)) + '''"
+	# 		kbe:''' + str(id.create_order_id(order_list)) + ''' kbe:hasGearBox "''' + str(id.create_gearbox_id(order_list)) + '''"
 	# 	}
 	# 	WHERE {
 	# 	}
@@ -154,9 +176,6 @@ class FusekiHandler(object):
 
 	# 	PARAMS = {"update": UPDATE}
 	# 	r = requests.post(url = URL+"/update", data = PARAMS)
-
-	# def link_order_gearBox():
-
 	
 	# def create_order(order_list): 
 	# 	#Input: [customer name, adress, phone, email, radius_list[]] 
@@ -182,8 +201,15 @@ class FusekiHandler(object):
 	# 	# return 0 if order is added to db (if something else, something went wrong)
 
 
-print(FusekiHandler.add_customer_to_db(["Frida Frosk", "Dammen", 46666666,"frida@mail.com"]))
-print(FusekiHandler.add_gearBox_to_db(["JGsitt", [40,506,700], "liksomlink", "ROSA<3", "Diamant"]))
+# INPUT gearBox_list: [gearBox_id, radiusList, photoPath, color, material]
+# INPUT: order_list: [Name, address, phone, email, material, color, radius_list[]]
+order_list = ["Gunnar Gris", "Gudrunsgate", 47777777, "gunnar@mail.com", "svart", "Diamant", [24,11,210]]
+gearBox_list = [IDGenerator.create_gearbox_id(order_list), [24,11,21], "bildeFra241121", "svart", "diamant"]
+
+print(FusekiHandler.add_gearBox_to_db(gearBox_list))
+print(FusekiHandler.add_customer_to_db(order_list))
+
+print(FusekiHandler.link_order_costumer(order_list))
 
 
 #  PROBLEM: RadiusList må gies inn som string, ikke list. Fordi list ikke har .replace muligheter.
