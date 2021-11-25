@@ -180,7 +180,6 @@ class FusekiHandler(object):
 		PARAMS = {"query": QUERY}
 		r = requests.get(url = URL, params = PARAMS) 
 		data = r.json()
-		print(data)
 		
 		if (len(data['results']['bindings']) == 0 ):
 			return 0 #FALSE
@@ -192,7 +191,9 @@ class FusekiHandler(object):
 		order_id = IDGenerator.create_order_id(order_list)
 		customer_id = IDGenerator.create_customer_id(order_list)
 		gearBox_id = IDGenerator.create_gearbox_id(order_list)
-
+		# print(order_id)
+		# print(customer_id)
+		# print(gearBox_id)
 		UPDATE = ('''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
 		INSERT {
@@ -203,46 +204,79 @@ class FusekiHandler(object):
 		WHERE {
 		}
 		''')
-
 		PARAMS = {"update": UPDATE}
 		r = requests.post(url = URL+"/update", data = PARAMS) 
 		
 		return FusekiHandler.is_order_in_db(order_list)
 
+	def add_photo_name_to_gearbox(radius_list, photo_name): #photo_name = gearbox_id fra id-fil?
+		gearBox_id = IDGenerator.create_gearbox_id([radius_list])
+		UPDATE = ('''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		INSERT {
+  			kbe:''' + str(gearBox_id) + ''' a kbe:GearBox.
+  			kbe:''' + str(gearBox_id) + ''' kbe:hasPhotoName "''' + str(photo_name) + '''".
+		}
+		WHERE {
+		}
+		''')
+		PARAMS = {"update": UPDATE}
+		r = requests.post(url = URL+"/update", data = PARAMS) 
+		
+		
+		return 
 
-	def create_order(order_list): #UFERDIG
+
+	def count_customer_orders(order_list):
+		customer_id = IDGenerator.create_customer_id(order_list)	
+
+		QUERY = ('''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		SELECT (count(?customer) as ?orderCount)
+		WHERE {
+			?Order kbe:hasCustomer ?customer.
+  		FILTER( EXISTS {?Order kbe:hasCustomer "'''+str(customer_id)+'''"} )
+		} 
+		GROUP BY ?customer
+		''')
+
+		PARAMS = {"query": QUERY}
+		r = requests.get(url = URL, params = PARAMS) 
+		data = r.json()
+		
+		order_count = data['results']['bindings'][0]['orderCount']['value']
+		return order_count
+
+
+	def create_order(order_list):
 		order_id = IDGenerator.create_order_id(order_list)
 
-
 		if (FusekiHandler.is_customer_in_db(order_list) == 0): #=0(false) if customer not i db. then add.
-			FusekiHandler.add_customer_to_db(order_list)
+			c = FusekiHandler.add_customer_to_db(order_list)
 
 		if (FusekiHandler.is_gearBox_in_db(order_list) == 0):  #=0(false) if gearBox not i db. then add.
-			FusekiHandler.add_gearBox_to_db(order_list)
+			c += FusekiHandler.add_gearBox_to_db(order_list)
 
-		'''is_order_in_db() er uferdig!!!'''
-		if (FusekiHandler.is_order_in_db(order_list) == 0):  #=0(false) if order not i db. then add.
-			FusekiHandler.add_order_to_db(order_list)
-	
-		
-		# call templet_file_creator to make the order python-file with the new name
+		c += FusekiHandler.add_order_to_db(order_list)
 
-
-		# link Order with Customer, link Customer with Order.
-		# link Order with GearBox.
-
+		if (c == 3):
+			return 1
+		return 0
 		# return 1 if order is added to db (if something else, something went wrong)
 
 
 # INPUT: order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
-order_list = ["Hallvard Bjørgen", "Blåbærskogen", 9876543210, "hb@mail.com", "Diamond", "Uncertain", "", [100,200,300]]
-order_list2 = ["Hallvard Bjørge999n", "Bl999åbærskogen", 9876999543210, "hb@999mail.com", "Dia999mond", "Uncert999ain", "", [100,200,300,999]]
+order_list = ["Åge Stormo", "Slottet", 44332211, "åge@mail.com", "Diamond", "None", "", [10,50,100]]
+order_list_2 = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58]]
+order_list_3 = ["Jens", "Dragvoll", 121212, "jens@mail.com", "Diamond", "None", "jensPåDrag", [12,12,12]]
+order_list_4 = ["Richard", "Muren", 434343, "richard@mail.com", "Diamond", "None", "richardPåMuren", [43,43,43]]
 
-# print(FusekiHandler.add_gearBox_to_db(order_list))
-print(FusekiHandler.add_customer_to_db(order_list))
-# print(FusekiHandler.add_order_to_db(order_list))
-print(FusekiHandler.is_customer_in_db(order_list[2]))
-print(FusekiHandler.is_customer_in_db(order_list2[2]))
+# print(FusekiHandler.add_customer_to_db(order_list_3))
+# print(FusekiHandler.add_gearBox_to_db(order_list_3))
+# print(FusekiHandler.add_order_to_db(order_list_3))
+print(FusekiHandler.create_order(order_list_2))
+print(FusekiHandler.count_customer_orders(order_list_2))
+
 
 
 #  PROBLEM: RadiusList må gies inn som string, ikke list. Fordi list ikke har .replace muligheter.
