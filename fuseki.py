@@ -160,6 +160,7 @@ class FusekiHandler(object):
 		PARAMS = {"query": QUERY}
 		r = requests.get(url = URL, params = PARAMS) 
 		data = r.json()
+		print(data)
 		
 		if (len(data['results']['bindings']) == 0 ):
 			return 0 #FALSE
@@ -215,10 +216,13 @@ class FusekiHandler(object):
 
 # INPUT: order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
 order_list = ["Hallvard Bjørgen", "Blåbærskogen", 9876543210, "hb@mail.com", "Diamond", "Uncertain", "", [100,200,300]]
+order_list2 = ["Hallvard Bjørge999n", "Bl999åbærskogen", 9876999543210, "hb@999mail.com", "Dia999mond", "Uncert999ain", "", [100,200,300,999]]
 
-print(FusekiHandler.add_gearBox_to_db(order_list))
+# print(FusekiHandler.add_gearBox_to_db(order_list))
 print(FusekiHandler.add_customer_to_db(order_list))
-print(FusekiHandler.add_order_to_db(order_list))
+# print(FusekiHandler.add_order_to_db(order_list))
+print(FusekiHandler.is_customer_in_db(order_list[2]))
+print(FusekiHandler.is_customer_in_db(order_list2[2]))
 
 
 #  PROBLEM: RadiusList må gies inn som string, ikke list. Fordi list ikke har .replace muligheter.

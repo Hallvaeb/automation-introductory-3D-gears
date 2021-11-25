@@ -1,0 +1,283 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.my-kbe.com/kbe-system.owl#"
+     xml:base="http://www.my-kbe.com/kbe-system.owl"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.my-kbe.com/kbe-system.owl"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasAddress -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasAddress">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasColor -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasColor">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasCustomer -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasCustomer">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Order"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasEmail -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasEmail">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasGearBox -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasGearBox">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Order"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasMaterial -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasMaterial">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasName -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasName">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasOrder -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasOrder">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Customer"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasPhone -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasPhone">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasPhotoName -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasPhotoName">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#hasRadiusList -->
+
+    <owl:DatatypeProperty rdf:about="http://www.my-kbe.com/kbe-system.owl#hasRadiusList">
+        <rdfs:domain rdf:resource="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Customer -->
+
+    <owl:Class rdf:about="http://www.my-kbe.com/kbe-system.owl#Customer">
+        <rdfs:subClassOf rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Designer -->
+
+    <owl:Class rdf:about="http://www.my-kbe.com/kbe-system.owl#Designer">
+        <rdfs:subClassOf rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Gearbox -->
+
+    <owl:Class rdf:about="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Human -->
+
+    <owl:Class rdf:about="http://www.my-kbe.com/kbe-system.owl#Human"/>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Operator -->
+
+    <owl:Class rdf:about="http://www.my-kbe.com/kbe-system.owl#Operator">
+        <rdfs:subClassOf rdf:resource="http://www.my-kbe.com/kbe-system.owl#Human"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Order -->
+
+    <owl:Class rdf:about="http://www.my-kbe.com/kbe-system.owl#Order"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Customer1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#Customer1">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Customer"/>
+        <hasAddress rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Annegata1</hasAddress>
+        <hasEmail rdf:datatype="http://www.w3.org/2001/XMLSchema#string">c1@mail.com</hasEmail>
+        <hasName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anne Arnesen</hasName>
+        <hasOrder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Order1</hasOrder>
+        <hasPhone rdf:datatype="http://www.w3.org/2001/XMLSchema#int">411111111</hasPhone>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Customer2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#Customer2">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Customer"/>
+        <hasAddress rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Berggaten2</hasAddress>
+        <hasEmail rdf:datatype="http://www.w3.org/2001/XMLSchema#string">c2@mail.com</hasEmail>
+        <hasName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Berit Berntsen</hasName>
+        <hasOrder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Order2</hasOrder>
+        <hasPhone rdf:datatype="http://www.w3.org/2001/XMLSchema#int">42222222</hasPhone>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Customer3 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#Customer3">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Customer"/>
+        <hasAddress rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Christensgate3</hasAddress>
+        <hasEmail rdf:datatype="http://www.w3.org/2001/XMLSchema#string">c3@gmail.com</hasEmail>
+        <hasName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Christian Cristiansen</hasName>
+        <hasOrder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Order3</hasOrder>
+        <hasPhone rdf:datatype="http://www.w3.org/2001/XMLSchema#int">43333333</hasPhone>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#GearBox1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#GearBox1">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+        <hasColor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Black</hasColor>
+        <hasMaterial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Brass</hasMaterial>
+        <hasPhotoName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">detteErEnTest</hasPhotoName>
+        <hasRadiusList rdf:datatype="http://www.w3.org/2001/XMLSchema#string">[20,30,40]</hasRadiusList>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#GearBox2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#GearBox2">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Gearbox"/>
+        <hasColor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasColor>
+        <hasMaterial rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Diamond</hasMaterial>
+        <hasPhotoName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Test2</hasPhotoName>
+        <hasRadiusList rdf:datatype="http://www.w3.org/2001/XMLSchema#string">[10,30]</hasRadiusList>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Order1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#Order1">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Order"/>
+        <hasCustomer>Customer1</hasCustomer>
+        <hasGearBox rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GearBox1</hasGearBox>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Order2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#Order2">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Order"/>
+        <hasCustomer rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Customer2</hasCustomer>
+        <hasGearBox rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GearBox2</hasGearBox>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.my-kbe.com/kbe-system.owl#Order3 -->
+
+    <owl:NamedIndividual rdf:about="http://www.my-kbe.com/kbe-system.owl#Order3">
+        <rdf:type rdf:resource="http://www.my-kbe.com/kbe-system.owl#Order"/>
+        <hasCustomer rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Customer3</hasCustomer>
+        <hasGearBox rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GearBox1</hasGearBox>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
