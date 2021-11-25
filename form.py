@@ -20,7 +20,6 @@ class FormCreator(object):
                         <input class="last" type="email" name="email" placeholder="E-mail" id="email" required 
                             oninvalid="this.setCustomValidity('Email req. as it is used as customer key in db')" oninput="this.setCustomValidity('')"><br>
                     </fieldset>
-                    <input type="hidden" name="radius_list" value='"""+FormCreator.list_to_string(radius_list)+"""'>
                     <fieldset>
                         <legend>Gear specifications</legend>
                         <label for="material">Material </label><br>
@@ -28,18 +27,18 @@ class FormCreator(object):
                             <option value="" disabled selected>Material</option>
                             <option>Brass</option>
                             <option>Steel</option>
-                            <option>Diamond</option>
+                            <option selected="selected">Diamond</option>
                             <option>Uncertain</option>
                         </select><br>
                         <label for="color">Color</label><br>
                         <select id="color" name="color">
                             <option value="" disabled selected>Color</option>
-                            <option>None</option>
+                            <option selected="selected">None</option>
                             <option>Have it painted</option>
                             <option>Uncertain</option>
                         </select><br>
                     </fieldset>
-                    <input type="hidden" name="photo_name" value='""'>
+                    <input type="hidden" name="radius_list" value='"""+FormCreator.list_to_string(radius_list)+"""'>
                     <input type="submit" value="Order now!" id="submit">
                     </form></section>"""
 
@@ -61,7 +60,6 @@ class FormCreator(object):
                             oninvalid="this.setCustomValidity('Email req. as it is used as customer key in db')" oninput="this.setCustomValidity('')" 
                             value="test_email@gmail.com"><br>
                     </fieldset>
-                    <input type="hidden" name="radius_list" value=\""""+FormCreator.list_to_string(radius_list)+"""\">
                     <fieldset>
                         <legend>Gear specifications</legend>
                         <label for="material">Material </label><br>
@@ -69,18 +67,18 @@ class FormCreator(object):
                             <option value="" disabled selected>Material</option>
                             <option>Brass</option>
                             <option>Steel</option>
-                            <option>Diamond</option>
+                            <option selected="selected" >Diamond</option>
                             <option>Uncertain</option>
                         </select><br>
                         <label for="color">Color</label><br>
                         <select id="color" name="color">
                             <option value="" disabled selected>Color</option>
-                            <option>None</option>
+                            <option selected="selected">None</option>
                             <option>Have it painted</option>
                             <option>Uncertain</option>
                         </select><br>
                     </fieldset>
-                    <input type="hidden" name="photo_name" value='""'>
+                    <input type="hidden" name="radius_list" value=\""""+FormCreator.list_to_string(radius_list)+"""\">
                     <input type="submit" value="Order now!" id="submit">
                     </form></section>"""
             return form

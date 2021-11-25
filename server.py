@@ -62,7 +62,6 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes('<a href="/"><button>Make another!</button></a></body>', 'utf-8'))
 
 		elif path.find("/image.png") != -1:
-			print("Image is being accessed:", photo_name)
 			# Make right headers
 			s.send_response(200)
 			s.send_header("Content-type", "image/png")
@@ -73,16 +72,16 @@ class ServerHandler(BaseHTTPRequestHandler):
 			theImg = bReader.read()
 			s.wfile.write(theImg)
 
-		# elif path.find("/favicon_10.ico") != -1:
-		# 	# Make right headers
-		# 	s.send_response(200)
-		# 	s.send_header("Content-type", "image/x-icon")
-		# 	s.end_headers()
-		# 	#Read the file
-		# 	#Write file.
-		# 	bReader = open("./style_fav/favicon_10.ico", "rb")
-		# 	theImg = bReader.read()
-		# 	s.wfile.write(theImg)
+		elif path.find("/favicon_10.ico") != -1:
+			# Make right headers
+			s.send_response(200)
+			s.send_header("Content-type", "image/x-icon")
+			s.end_headers()
+			#Read the file
+			#Write file.
+			bReader = open("./style_fav/favicon_10.ico", "rb")
+			theImg = bReader.read()
+			s.wfile.write(theImg)
 
 		# elif path.find("/style.css") != -1:
 		# 	# Make right headers
@@ -139,9 +138,8 @@ class ServerHandler(BaseHTTPRequestHandler):
 						autofocus> <br><br> """
 							
 			# Making the buttons
-			out += """<input type="submit" value="Submit">\
-					<a href="/"> <button>Go back</button> </a> </body>\
-						</form></section>"""
+			out += """<input type="submit" value="Submit"></form></section>
+				<a href="/"> <button>Go back</button> </a> </body>"""
 			s.wfile.write(bytes(out, 'utf-8'))
 
 		elif path.find("/review") != -1:
@@ -173,11 +171,14 @@ class ServerHandler(BaseHTTPRequestHandler):
 				photo_name = IDGenerator.create_photo_name(radius_list)
 				if (FusekiHandler.is_gearBox_in_db(radius_list) != 0):
 					FusekiHandler.add_photo_name_to_gearbox(radius_list, photo_name)
-					out += '<img src="/image.png" alt= "The gearbox was still found in the database, but a photo has not yet been created. Our magnificent Johanne is working hard to make a photo of it available ASAP.">'
+					out += '<img src="/image.png" \
+						alt= "The gearbox was found in the database, but a photo has not yet been created. \
+							Our magnificent Johanne is working hard to make a photo of it available ASAP."\
+							width="500">'
 				else:
 					response = JournalCreator.create_gear_box_journal_file(radius_list, photo_name)
 					if(response):
-						out += "The gearbox was not found in the database. We will supply it when it is ready. Our magnificent Johanne is working hard to make a photo of it available ASAP."
+						out += "The gearbox was not found in the database, but is now being created. We will supply it when it is ready. <br>Our magnificent Johanne is working hard to make a photo of it available ASAP."
 					FusekiHandler.add_gearBox_to_db_rad(radius_list)
 			except Exception as e:
 				print(e)
@@ -200,25 +201,16 @@ class ServerHandler(BaseHTTPRequestHandler):
 			param_line = post_body.decode()
 			pairs = param_line.split("&")
 
-			# [Name, address, phone, email, material, color, photoname, radius_list[]]
+			# [Name, address, phone, email, material, color, photoname, [radius_list]]
 			form_input_list = [pairs[i].split("=")[1] for i in range(len(pairs))]
-
-			out = head+"<body>"+ServerHandler.get_personalized_message(form_input_list)\
-			+"""
-			<section>
+			form_input_list = ServerHandler.make_form_input_normal_again(form_input_list)
+			out = head+"<body><section>"+ServerHandler.get_personalized_message(form_input_list)\
+			+"""<br>
 				... Disclaimer: Unfortunately, this is only a school project so estimated delivery is NEVER...<br>
-			</section><br>
-			"""
-			s.wfile.write(bytes(out, 'utf-8'))
-			s.wfile.write(bytes('<a href="/"><button>Make another!</button></a>', 'utf-8'))
-			
-		
-			reciept = ServerHandler.create_reciept(form_input_list)
-			s.wfile.write(bytes(reciept, 'utf-8'))
-			
-			# [Name, address, phone, email, material, color, radius_list[]]
-			# FusekiHandler.add_order_to_db(form_input_list)
-			s.wfile.write(bytes("</body>", 'utf-8'))
+			</section><br><a href="/"><button>Make another!</button></a></body>
+			""" + ServerHandler.create_reciept(form_input_list)
+			s.wfile.write(bytes(out, 'utf-8'))	
+			FusekiHandler.create_order(form_input_list)
 
 	def create_header():
 		# Returns a header
@@ -228,47 +220,56 @@ class ServerHandler(BaseHTTPRequestHandler):
 			<head>
 				<title> Gear 10 </title>
 				<link rel="icon" href="/favicon_10.ico" type="image/x-icon"/>
-				
+				<link rel="stylesheet" href="/style.css">
 			</head>
 			"""#<link rel="stylesheet" href="/style.css">
 
 	def get_personalized_message(form_input_list):
-		print(form_input_list)
-		print("personalized msg")
 		# customer has now been added to db with the current order, and therefore everyone is in db at this point, with >0 orders
 		try:
-			print("Finner N ORDERS FROM COUNT CUSTOMER ORDERS")
+			print("INPUT: ", form_input_list)
 			n_orders = FusekiHandler.count_customer_orders(form_input_list)
-			print(n_orders, "N ORDERS FROM COUNT CUSTOMER ORDERS")
-			if n_orders > 1:
-				return "WELCOME BACK OL' PAL! You now have "+str(n_orders)+"!"
+			print("n order: ", n_orders)
+			if n_orders >= 1:
+				return "<h3>WELCOME BACK OL' PAL! You now have "+str(n_orders)+" orders!</h3>"
 			else:
-				return "WELCOME NEW CUSTOMER! You just made your first order (at least on this email).<br>"
+				return "<h3>WELCOME NEW CUSTOMER! <br>Your first gear box is ordered.</h3><br>"
 		except:
 			return "Order successfully added!<br>"
 
-	def create_reciept(form_input_list):
-		# Remove weird signs in inefficient but functional way
-		# ASCII to utf-8 eller character
-		string_input_list = (str(form_input_list[i]).\
-			replace("+", " ").replace("%40", "@").replace("%21", "!")\
+	def make_form_input_normal_again(form_input_list):
+		# RETURNS [name, address, phone, email, material, color, "", [radiuses]]
+		string_input_list = (str(form_input_list[i])\
+			.replace("+", " ").replace("%40", "@").replace("%21", "!")\
 				.replace("%3D", "=").replace("%3F", "(").replace("%28", "(")\
 					.replace("%29", ")").replace("%0D", "<br>").replace("%0A", "<br>")\
 						.replace("%5B", "[").replace("%2C", ",").replace("%5D", "]") \
-							.replace("%22", "")
+							.replace("%22", "").replace("%F8", "ø")
 							for i in range(len(form_input_list)))
 		# Yes I have tried to fix this but no luck.
 		# print("STR:"+ unquote(next((str(x) for x in form_input_list))))
+		name = next(string_input_list)
+		address = next(string_input_list)
+		phone = next(string_input_list)
+		email = next(string_input_list)
+		material = next(string_input_list, "Unspecified")
+		color = next(string_input_list, "Unspecified")
+		radiuses = next(string_input_list)
+		form_input_list_readable = [name, address, phone, email, material, color, "", radiuses]
+		return form_input_list_readable
+
+	def create_reciept(form_input_list):
+		form_input_list_readable = form_input_list
 		reciept = """
 				<section>
 					<h1> ----------------------- ORDER SUMMARY ----------------------- </h1>
-					Name: """+next(string_input_list)+ """<br>
-					Address: """+next(string_input_list)+ """<br>
-					Phone: """+next(string_input_list)+ """<br>
-					Email: """+next(string_input_list)+ """<br><br>
-					"""+ServerHandler.get_printable_radiuses(next(string_input_list))+"""
+					Name: """+form_input_list_readable[0]+ """<br>
+					Address: """+form_input_list_readable[1]+ """<br>
+					Phone: """+form_input_list_readable[2]+ """<br>
+					Email: """+form_input_list_readable[3]+ """<br><br>
+					"""+ ServerHandler.get_printable_radiuses(form_input_list_readable[7])+"""
 					Material: """
-		material = next((string_input_list), "Unspecified")
+		material = form_input_list_readable[4]
 		if IDGenerator.get_material_number(material) == 3:
 			# Diamonds are requested, but are they available?
 			if ServerHandler.is_diamond_available():
@@ -278,28 +279,16 @@ class ServerHandler(BaseHTTPRequestHandler):
 		else:
 			reciept += material+"""<br>"""
 
-		reciept += """Color: """+next((string_input_list), "Unspecified")+ """<br><br>
+		reciept += """Color: """+form_input_list_readable[5] + """<br><br>
 					<h3>Thank you for shopping at Gear 10 Productions. Hope the gear box suits your gearing needs. You can pay later!</h3>
 				</section>"""
 		return reciept
 
 	def get_printable_radiuses(string_gear_radius_list):
-		"""
-		input: gear radius list in string form
-		output: returns the radiuses in a nice looking fashion
-		"""
 		# Make a list instead of string
 		gear_radius_list = string_gear_radius_list[1:-1].split(",")
-
 		out = str(len(gear_radius_list))
-		# try:
-		# 	if(FusekiHandler.is_gearBox_in_db(gear_radius_list)):
-		# 		out += ' gears are already created and on their way! Radiuses are as follows:<br>'
-		# 	else:
-		# 		out += ' gears are being created by brilliant college student Johanne. Radiuses are as follows:<br>'
-		# except:
 		out += ' gears are ordered. Radiuses are as follows:<br>'
-
 		for i in range(len(gear_radius_list)):
 			out += ('Gear nr.' + str(i+1) + ': ' + str(gear_radius_list[i]) + ' [mm]<br>')
 		return out

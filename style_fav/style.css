@@ -1,14 +1,14 @@
 body {
-    line-height: 1.5;
-    margin: auto;
     background-color: lightgrey;
-    font-family: Verdana;
+    /* line-height: 1.5;
+    margin: auto; */
+    /* font-family: Verdana;
     font-size: 14px;
     color: #323232;
-    text-align: center;
+    text-align: center; */
 }
 
-header {
+/* header {
     position: static;
     left: 50%;
     margin-right: -50%;
@@ -38,4 +38,4 @@ form{
     height: 200px;
     text-align: left;
     margin-left: 30%;
-}
+} */

@@ -191,9 +191,9 @@ class FusekiHandler(object):
 		order_id = IDGenerator.create_order_id(order_list)
 		customer_id = IDGenerator.create_customer_id(order_list)
 		gearBox_id = IDGenerator.create_gearbox_id(order_list)
-		print(order_id)
-		print(customer_id)
-		print(gearBox_id)
+		# print(order_id)
+		# print(customer_id)
+		# print(gearBox_id)
 		UPDATE = ('''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
 		INSERT {
@@ -240,9 +240,13 @@ class FusekiHandler(object):
 		PARAMS = {"query": QUERY}
 		r = requests.get(url = URL, params = PARAMS) 
 		data = r.json()
-		
-		order_count = data['results']['bindings'][0]['orderCount']['value']
-		return order_count
+		try:
+			if(len(data['results']['bindings']) == 0):
+				return 0
+			return int(data['results']['bindings'][0]['orderCount']['value'])+1
+		except Exception as e:
+			print("fuseki error:", e)
+
 
 
 	def create_order(order_list):
@@ -263,19 +267,22 @@ class FusekiHandler(object):
 
 
 # INPUT: order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
-order_list = ["Åge Stormo", "Slottet", 44332211, "åge@mail.com", "Diamond", "None", "", [10,50,100]]
-order_list_2 = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58]]
-order_list_2 = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58,58]]
+# order_list = ["Åge Stormo", "Slottet", 44332211, "åge@mail.com", "Diamond", "None", "", [10,50,100]]
+# order_list_2 = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58]]
+# order_list_2b = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58,58]]
 
-order_list_3 = ["Jens", "Dragvoll", 121212, "jens@mail.com", "Diamond", "None", "jensPåDrag", [12,12,12]]
-order_list_4 = ["Richard", "Muren", 434343, "richard@mail.com", "Diamond", "None", "richardPåMuren", [43,43,43]]
-order_list_5 = ["Anne-Kristin", "Oslo", 92493886, "ak@mail.com", "Diamond", "None", "aks_photoname", [92,92]]
-order_list_6 = ["Helena", "Oslo", 43542633, "helena@mail.com", "Diamond", "None", "", [44,44]]
+# order_list_3 = ["Jens", "Dragvoll", 121212, "jens@mail.com", "Diamond", "None", "jensPåDrag", [12,12,12]]
+# order_list_4 = ["Richard", "Muren", 434343, "richard@mail.com", "Diamond", "None", "richardPåMuren", [43,43,43]]
+# order_list_6 = ["Helena", "Oslo", 43542633, "helena@mail.com", "Diamond", "None", "", [44,44]]
 
-print(FusekiHandler.create_order(order_list_6))
-print(FusekiHandler.is_order_in_db(order_list_6))
+# print(FusekiHandler.create_order(order_list))
+# print(FusekiHandler.create_order(order_list_2))
+# print(FusekiHandler.create_order(order_list_2b))
+# print(FusekiHandler.create_order(order_list_3))
+# print(FusekiHandler.create_order(order_list_4))
+# print(FusekiHandler.create_order(order_list_6))
+# print(FusekiHandler.is_order_in_db(order_list_6))
 
-print(FusekiHandler.add_photo_name_to_gearbox(order_list_6[-1], "FikkJegDetTilNåHelena?"))
 
 
 
