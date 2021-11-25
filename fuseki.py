@@ -12,15 +12,15 @@ URL = "http://127.0.0.1:3030/kbe"
 
 class FusekiHandler(object):
 
-	def get_photo_path_from_db(radius_list):
+	def get_photo_name_from_db(radius_list):
 		# Convert list to string format			
 		string_radius_list = str(radius_list).replace(" ", "")
 
 		QUERY = '''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-		SELECT ?photoPath
+		SELECT ?photoname
 		WHERE {
-			?GearBox kbe:hasPhotoPath ?photoPath.
+			?GearBox kbe:hasPhotoName ?photoname.
 			?GearBox kbe:hasRadiusList ?radiusList
 		FILTER (?radiusList = "''' + string_radius_list + '''") 
 		}
@@ -35,14 +35,14 @@ class FusekiHandler(object):
 		#print("JSON:", data)
 		
 		# Checking the value of the parameter
-		#print("Data:", data['results']['bindings'][0]['photoPath']['value'])	
+		#print("Data:", data['results']['bindings'][0]['photoname']['value'])	
 		
-		# return the photopath of the photo of this gearbox
-		photo_path = data['results']['bindings'][0]['photoPath']['value']
+		# return the n of the photo of this gearbox
+		photo_name = data['results']['bindings'][0]['photoname']['value']
 
 		# Validate photo path
 
-		return photo_path
+		return photo_name
 
 
 	def is_customer_in_db(customer_phone):
@@ -66,7 +66,7 @@ class FusekiHandler(object):
 		return 0
 		
 	def add_customer_to_db(order_list):
-		# INPUT customer_list: [Name, address, phone, email, material, color, photoPath, radius_list[]]
+		# INPUT customer_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
 	 	# return 0 when added
 		customer_id = IDGenerator.create_customer_id(order_list)
 		order_id = IDGenerator.create_order_id(order_list)
@@ -80,6 +80,7 @@ class FusekiHandler(object):
   			kbe:''' + str(customer_id) + ''' kbe:hasAddress "''' + str(order_list[1]) + '''".
   			kbe:''' + str(customer_id) + ''' kbe:hasPhone "''' + str(order_list[2]) + '''".
   			kbe:''' + str(customer_id) + ''' kbe:hasEmail "''' + str(order_list[3]) + '''".
+			
 			kbe:''' + str(customer_id) + ''' kbe:hasOrder "''' + str(order_id) + '''"
 		}
 		WHERE {
@@ -116,7 +117,7 @@ class FusekiHandler(object):
 		return 0
 
 	def add_gearBox_to_db(order_list):
-		# order_list: [Name, address, phone, email, material, color, photoPath, radius_list[]]
+		# order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
 	 	# return 0 when added
 		gearBox_id  = IDGenerator.create_gearbox_id(order_list)
 
@@ -125,7 +126,7 @@ class FusekiHandler(object):
 		INSERT {
   			kbe:''' + str(gearBox_id) + ''' a kbe:GearBox.
   			kbe:''' + str(gearBox_id) + ''' kbe:hasRadiusList "''' + str(order_list[-1]) + '''".
-  			kbe:''' + str(gearBox_id) + ''' kbe:hasPhotoPath "''' + str(order_list[-2]) + '''".
+  			kbe:''' + str(gearBox_id) + ''' kbe:hasPhotoName "''' + str(order_list[-2]) + '''".
   			kbe:''' + str(gearBox_id) + ''' kbe:hasColor "''' + str(order_list[-3]) + '''".
   			kbe:''' + str(gearBox_id) + ''' kbe:hasMaterial "''' + str(order_list[-4]) + '''"
 		}
@@ -161,7 +162,7 @@ class FusekiHandler(object):
 		return 0
 
 	def add_order_to_db(order_list): #UFERDIG?
-		# order_list: [Name, address, phone, email, material, color, photoPath, radius_list[]]
+		# order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
 	 	# return 0 when added
 		order_id = IDGenerator.create_order_id(order_list)
 		customer_id = IDGenerator.create_customer_id(order_list)
@@ -185,7 +186,7 @@ class FusekiHandler(object):
 
 
 	# def is_order_customer_linked(order_list): #UFERDIG
-	# 	# INPUT: [Name, address, phone, email, material, color, photoPath, radius_list[]]
+	# 	# INPUT: [Name, address, phone, email, material, color, photoname, radius_list[]]
 	# 	order_id = IDGenerator.create_order_id(order_list)
 	# 	customer_id = IDGenerator.create_customer_id(order_list)
 
@@ -223,7 +224,7 @@ class FusekiHandler(object):
 
 
 	# def is_order_gearBox_linked(order_list): #UFERDIG
-	# 	# INPUT: [Name, address, phone, email, material, color, photoPath, radius_list[]]
+	# 	# INPUT: [Name, address, phone, email, material, color, photoname, radius_list[]]
 	# 	order_id = IDGenerator.create_order_id(order_list)
 	# 	gearBox_id = IDGenerator.create_gearbox_id(order_list)
 
@@ -246,7 +247,6 @@ class FusekiHandler(object):
 	
 
 	def create_order(order_list): #UFERDIG
-		#Input: [customer name, adress, phone, email, radius_list[]] 
 		if (FusekiHandler.is_customer_in_db(order_list) == 1): #=1 if customer not i db. then add.
 			FusekiHandler.add_customer_to_db(order_list)
 
@@ -264,7 +264,7 @@ class FusekiHandler(object):
 		# return 0 if order is added to db (if something else, something went wrong)
 
 
-# INPUT: order_list: [Name, address, phone, email, material, color, photoPath, radius_list[]]
+# INPUT: order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
 order_list = ["Daniel Drage", "hulen", 44444444, "daniel@mail.com", "Brass", "None", "None", [100,150,200]]
 
 print(FusekiHandler.add_gearBox_to_db(order_list))
