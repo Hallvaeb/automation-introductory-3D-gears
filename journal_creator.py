@@ -1,35 +1,37 @@
+import os
+
+from fuseki import FusekiHandler
 
 
 class JournalCreator(object):
     
-    def create_gear_box_journal_file(radius_list, gear_box_id):
+    def create_gear_box_journal_file(radius_list, photo_name):
 
         try:
-            # --------- THIS IS THE PATH TO WHERE THE ---------
-            print("CREATE JOURNAL INNE I TRY")
-            order_path = "C://Users/Eier/OneDrive/Studier/TMM4270/TMM4270_A3/"
-    
-            # Read the template file
-            f = open(order_path+"/Templates/gearBox_template_imagetaker.py", "r")
-            print("CREATE JOURNAL INNE I TRY")
+            project_folder_path = str(os.getcwd()).replace(os.sep, "/")
+            print(project_folder_path)
 
+            # Read the template file
+            f = open("./Templates/gearBox_template_imagetaker.py", "r")
             txt = f.read()
-            txt_replaced = txt.replace("<RADIUS_LIST>", str(radius_list)).replace("<PHOTO_NAME>", str(gear_box_id))
-            print("CREATE JOURNAL INNE I TRY")
+            print("create_gear_box_journal")
+            txt_replaced = txt.replace("<RADIUS_LIST>", str(radius_list))
+            txt_replaced = txt_replaced.replace("<PHOTO_NAME>", str(photo_name))
+            txt_replaced = txt_replaced.replace("<PROJECT_FOLDER_PATH>", project_folder_path)
+
+            print("create_gear_box_journal")
             f.close()
             
             # Write a new temporary file.
-            print("CREATE JOURNAL INNE I TRY")
-            print(order_path+"Product_orders/gearBox_order_"+ str(gear_box_id) +".py")
-            f = open(order_path+"Product_orders/gearBox_order_"+ str(gear_box_id) +".py", "w")
-            print("HER?")
+            f = open("./Product_orders/gearBox_order_"+ str(photo_name) +".py", "w")
             # Replacement section, replace the old gear_radiuses with the ones from the userinput
             f.write(txt_replaced)
-            print("HER?")
-            print("CREATE JOURNAL INNE I TRY")
             f.close()
+
+            # FusekiHandler.add_photo_name_to_gearbox(radius_list, photo_name)
 
             return True
 
         except:
+            print("Noe gikk feil i gear box journal creator")
             return False
