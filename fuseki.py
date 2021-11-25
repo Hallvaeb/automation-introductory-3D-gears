@@ -138,6 +138,26 @@ class FusekiHandler(object):
 		
 		return FusekiHandler.is_gearBox_in_db(order_list[-1])
 
+	def add_gearBox_to_db_rad(gearBox_radius_list):
+		# gearBox_list: radius_list[]
+	 	# return 1 when added
+		gearBox_id  = IDGenerator.create_gearbox_id(gearBox_radius_list)
+
+		UPDATE = ('''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		INSERT {
+  			kbe:''' + str(gearBox_id) + ''' a kbe:GearBox.
+  			kbe:''' + str(gearBox_id) + ''' kbe:hasRadiusList "''' + str(gearBox_radius_list) + '''".
+		}
+		WHERE {
+		}
+		''')
+
+		PARAMS = {"update": UPDATE}
+		r = requests.post(url = URL+"/update", data = PARAMS) 
+		
+		return FusekiHandler.is_gearBox_in_db(gearBox_radius_list)
+
 
 	def is_order_in_db(order_list):
 		# query that ask if customer is in db 
