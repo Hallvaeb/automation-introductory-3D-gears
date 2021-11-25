@@ -53,7 +53,7 @@ def main() :
     
     imageExportBuilder1.FileFormat = NXOpen.Gateway.ImageExportBuilder.FileFormats.Png
     
-    imageExportBuilder1.FileName = "C:\\Users\\Eier\\OneDrive\\Studier\\TMM4270\\TMM4270_A3\\Product_images\\FILENAME.png"
+    imageExportBuilder1.FileName = ".\\Product_images\\"+<PHOTO_NAME>+".png"
     
     imageExportBuilder1.BackgroundOption = NXOpen.Gateway.ImageExportBuilder.BackgroundOptions.Original
     

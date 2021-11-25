@@ -239,10 +239,7 @@ order_list = ["Hallvard Bjørgen", "Blåbærskogen", 9876543210, "hb@mail.com", 
 order_list2 = ["Hallvard Bjørge999n", "Bl999åbærskogen", 9876999543210, "hb@999mail.com", "Dia999mond", "Uncert999ain", "", [100,200,300,999]]
 
 # print(FusekiHandler.add_gearBox_to_db(order_list))
-print(FusekiHandler.add_customer_to_db(order_list))
-# print(FusekiHandler.add_order_to_db(order_list))
-print(FusekiHandler.is_customer_in_db(order_list[2]))
-print(FusekiHandler.is_customer_in_db(order_list2[2]))
+FusekiHandler.add_customer_to_db(order_list)
 
 
 #  PROBLEM: RadiusList må gies inn som string, ikke list. Fordi list ikke har .replace muligheter.

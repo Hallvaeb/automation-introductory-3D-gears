@@ -1,10 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 from form import FormCreator
-# from fuseki import FusekiHandler
 from random import randint
 from fuseki import FusekiHandler
 from id import IDGenerator
+from journal_creator import JournalCreator
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
@@ -20,6 +20,8 @@ class ServerHandler(BaseHTTPRequestHandler):
 	
 	def do_GET(s):
 		"""Respond to a GET request."""
+
+		global gearBox_photo_name
 		
 		head = ServerHandler.create_header()
 		
@@ -98,7 +100,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.send_header("Content-type", "image/png")
 			s.end_headers()
 			#Read the file
-			bReader = open("./Product_images/"+gearbox_photo_name, "rb")
+			bReader = open("./Product_images/"+str(gearBox_photo_name)+".png", "rb")
 			#Write file.
 			theImg = bReader.read()
 			s.wfile.write(theImg)
@@ -158,8 +160,9 @@ class ServerHandler(BaseHTTPRequestHandler):
 			# HTML title ++
 			out = head+"""
 			<section><h1>GearBox - building [2/2]</h1>
-			<form action = "/review" method="post">""" 
-			+ n_gears + """ gears chosen! Choose the radiuses:<br><br>
+			<form action = "/review" method="post">
+			"""+str(n_gears)+""" 
+			gears chosen! Choose the radiuses:<br><br>
 			"""			
 			# Making a field for each gear radius
 			for i in range(int(n_gears)): # n_gears
@@ -193,7 +196,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 			for i in range(0, n_gears):
 				radius_list.append(int(pairs[i].split("=")[1]))
 
-			# Write the page
+			# Write the page 
 			out = head+"""<section><h1>GearBox - review </h1>
 					""" + str(n_gears) + ' gears chosen. Radiuses are as follows:<br><br>'
 			for i in range(n_gears):
@@ -203,19 +206,24 @@ class ServerHandler(BaseHTTPRequestHandler):
 			try:
 				if FusekiHandler.is_gearBox_in_db(radius_list):
 					gearBox_photo_name = FusekiHandler.get_photo_name_from_db(radius_list)
-					if (gearBox_photo_name != "-1"):
+					if (gearBox_photo_name != 0):
 						out += '<img src="/image.png" alt= "Photo missing...">'
 						gearBox_photo_name = ""
 					else:
-						out += "The gearbox was found in the "
-
+						out += "The gearbox was found in the database, but a photo has not yet been created. Our magnificent Johanne is working hard to make a photo of it available ASAP."
 				else:
-					out += 'The gearbox was not found in the database. We will supply it when it is ready.'
-			except:
+					# gear box id is created based on radius list.
+					gear_box_id = IDGenerator.create_gearbox_id([radius_list])
+					if(JournalCreator.create_gear_box_journal_file(radius_list, gear_box_id)):
+						out += "The gearbox was not found in the database. We will supply it when it is ready. Our magnificent Johanne is working hard to make a photo of it available ASAP."
+					print(gear_box_id)
+					FusekiHandler.add_gearBox_to_db_rad(radius_list)
+			except Exception as e:
+				print(e)
 				out += "Something went wrong"
 
 			# Skjema for bestilling
-			form = FormCreator.create_form_private_customer_DUMMY(radius_list)
+			form = FormCreator.create_form_private_customer(radius_list)
 			out += form+"</body>"
 			s.wfile.write(bytes(out, 'utf-8'))
 		
