@@ -268,14 +268,20 @@ class FusekiHandler(object):
 # INPUT: order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
 order_list = ["Åge Stormo", "Slottet", 44332211, "åge@mail.com", "Diamond", "None", "", [10,50,100]]
 order_list_2 = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58]]
+order_list_2 = ["Lars", "Gløs", 56565656, "lars@mail.com", "Diamond", "None", "", [58,58,58,58]]
+
 order_list_3 = ["Jens", "Dragvoll", 121212, "jens@mail.com", "Diamond", "None", "jensPåDrag", [12,12,12]]
 order_list_4 = ["Richard", "Muren", 434343, "richard@mail.com", "Diamond", "None", "richardPåMuren", [43,43,43]]
+order_list_5 = ["Anne-Kristin", "Oslo", 92493886, "ak@mail.com", "Diamond", "None", "aks_photoname", [92,92]]
 
-# print(FusekiHandler.add_customer_to_db(order_list_3))
-# print(FusekiHandler.add_gearBox_to_db(order_list_3))
-# print(FusekiHandler.add_order_to_db(order_list_3))
-# print(FusekiHandler.create_order(order_list_2))
-# print(FusekiHandler.count_customer_orders(order_list_2))
+print(FusekiHandler.add_customer_to_db(order_list_3))
+print(FusekiHandler.add_gearBox_to_db(order_list_3))
+print(FusekiHandler.add_order_to_db(order_list_3))
+print(FusekiHandler.create_order(order_list))
+print(FusekiHandler.create_order(order_list_2))
+print(FusekiHandler.create_order(order_list_4))
+print(FusekiHandler.create_order(order_list_5))
+print(FusekiHandler.count_customer_orders(order_list_2))
 
 
 

@@ -15,7 +15,7 @@ class IDGenerator():
 
     def create_gearbox_id(fil):
         radius_list = fil[-1]
-        str_list = "r_" + str(radius_list).replace(", ", "_").replace("[","").replace("]","") +"_" #endret litt
+        str_list = str(radius_list).replace(", ", "r").replace("[","r").replace("]","r") #endret litt
         return str_list
 
     def create_order_id(fil):
