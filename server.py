@@ -8,7 +8,7 @@ from id import IDGenerator
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
-gearbox_photo_name = ""
+# gearbox_photo_name = ""
 
 
 class ServerHandler(BaseHTTPRequestHandler):
@@ -46,40 +46,40 @@ class ServerHandler(BaseHTTPRequestHandler):
 			s.wfile.write(bytes(out, 'utf-8'))
 
 			
-		elif path.find("/review") != -1:
-			# GET
-			s.send_response(200)
-			s.send_header("Content-type", "text/html")
-			s.end_headers()
+		# elif path.find("/review") != -1:
+		# 	# GET
+		# 	s.send_response(200)
+		# 	s.send_header("Content-type", "text/html")
+		# 	s.end_headers()
 
 		
-			# Reset list of radiuses
-			radius_list = [50, 100, 150]
+		# 	# Reset list of radiuses
+		# 	radius_list = [50, 100, 150]
 
-			n_gears = len(radius_list)
+		# 	n_gears = len(radius_list)
 
-			# Write the page
-			out = head+"""<body><section><h1>GearBox - review </h1>
-					""" + str(n_gears) + ' gears chosen. Radiuses are as follows:<br><br>'
-			for i in range(n_gears):
-				out += ('Gear nr.' + str(i+1) + ': ' + str(radius_list[i]) + ' [mm]<br>')
-			s.wfile.write(bytes(out, 'utf-8'))
-			s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
+		# 	# Write the page
+		# 	out = head+"""<body><section><h1>GearBox - review </h1>
+		# 			""" + str(n_gears) + ' gears chosen. Radiuses are as follows:<br><br>'
+		# 	for i in range(n_gears):
+		# 		out += ('Gear nr.' + str(i+1) + ': ' + str(radius_list[i]) + ' [mm]<br>')
+		# 	s.wfile.write(bytes(out, 'utf-8'))
+		# 	s.wfile.write(bytes('<a href="/"><button>Go back</button></a><br><br>', 'utf-8'))
 
-			try:
-				gearBox_photo_name = "gear250500" #FusekiRequest.get_photo_name_from_db(radius_list)
-				if FusekiHandler.is_gearBox_in_db(radius_list):
-					if FusekiHandler.get_photo_name_from_db(radius_list):
-						s.wfile.write(bytes('<img src="/image.png" alt= "Photo missing...">', 'utf-8'))
-					gearBox_photo_name = ""
-				else:
-					s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
-			except:
-				s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
+		# 	try:
+		# 		gearBox_photo_name = "gear250500" #FusekiRequest.get_photo_name_from_db(radius_list)
+		# 		if FusekiHandler.is_gearBox_in_db(radius_list):
+		# 			if FusekiHandler.get_photo_name_from_db(radius_list):
+		# 				s.wfile.write(bytes('<img src="/image.png" alt= "Photo missing...">', 'utf-8'))
+		# 			gearBox_photo_name = ""
+		# 		else:
+		# 			s.wfile.write(bytes('The gearbox was not found in the database. We will supply it when it is ready.', 'utf-8'))
+		# 	except:
+		# 		s.wfile.write(bytes("Something went wrong", 'utf-8')) #'That gearbox would\'ve been too cool for the program to display it.'
 
-			# Skjema for bestilling
-			form = FormCreator.create_form_private_customer_DUMMY(radius_list)
-			s.wfile.write(bytes(form+"</body>", 'utf-8'))
+		# 	# Skjema for bestilling
+		# 	form = FormCreator.create_form_private_customer_DUMMY(radius_list)
+		# 	s.wfile.write(bytes(form+"</body>", 'utf-8'))
 
 		elif path.find("/reciept") != -1:
 			s.send_response(200)
@@ -201,11 +201,14 @@ class ServerHandler(BaseHTTPRequestHandler):
 			out += '<a href="/"><button>Go back</button></a><br><br>'
 
 			try:
-				gearBox_photo_name = FusekiHandler.get_photo_name_from_db(radius_list)
 				if FusekiHandler.is_gearBox_in_db(radius_list):
-					if (FusekiHandler.get_photo_name_from_db(radius_list) != "-1"):
+					gearBox_photo_name = FusekiHandler.get_photo_name_from_db(radius_list)
+					if (gearBox_photo_name != "-1"):
 						out += '<img src="/image.png" alt= "Photo missing...">'
 						gearBox_photo_name = ""
+					else:
+						out += "The gearbox was found in the "
+
 				else:
 					out += 'The gearbox was not found in the database. We will supply it when it is ready.'
 			except:
@@ -261,9 +264,6 @@ class ServerHandler(BaseHTTPRequestHandler):
 			</head>
 			"""
 
-	def get_photoname():
-		return gear_photoname
-
 	def get_personalized_message():
 		# customer has now been added to db with the current order, and therefore everyone is in db at this point, with >0 orders
 		# The gear will already have been put in the db, even if it's a new one. Making a dynamic message for this is not worth the hassle.
@@ -281,6 +281,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 	
 	def create_reciept(form_input_list):
 		# Remove weird signs in inefficient but functional way
+		# ASCII to utf-8 eller character
 		string_input_list = (str(form_input_list[i]).replace("+", " ").replace("%40", "@").replace("%21", "!").replace("%3D", "=").replace("%3F", "(").replace("%28", "(").replace("%29", ")").replace("%0D", "<br>").replace("%0A", "<br>").replace("%5B", "[").replace("%2C", ",").replace("%5D", "]") for i in range(len(form_input_list)))
 		# Yes I have tried to fix this but no luck.
 		# print("STR:"+ unquote(next((str(x) for x in form_input_list))))
