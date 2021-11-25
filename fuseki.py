@@ -1,5 +1,4 @@
 import requests
-
 from id import IDGenerator 
 
 # TING Å SE PÅ:
@@ -14,7 +13,7 @@ class FusekiHandler(object):
 
 	def get_photo_name_from_db(radius_list):
 		# Convert list to string format			
-		string_radius_list = str(radius_list).replace(" ", "")
+		string_radius_list = str(radius_list)#.replace(" ", "")
 
 		QUERY = '''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
@@ -36,18 +35,19 @@ class FusekiHandler(object):
 		
 		# Checking the value of the parameter
 		#print("Data:", data['results']['bindings'][0]['photoname']['value'])	
-		
-		# return the n of the photo of this gearbox
-		photo_name = data['results']['bindings'][0]['photoname']['value']
-
-		# Validate photo path
-
-		return photo_name
+		try:
+			# return the n of the photo of this gearbox
+			photo_name = data['results']['bindings'][0]['photoname']['value']
+			if len(photo_name) < 2:
+				return 0
+			return photo_name
+		except:
+			return 0
 
 
 	def is_customer_in_db(customer_phone):
 		# query that ask if customer is in db 
-		# retrun 0 if customer in db
+		# retrun 1 (true) if customer in db
 		
 		QUERY = '''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
@@ -62,15 +62,14 @@ class FusekiHandler(object):
 		data = r.json()
 		
 		if (len(data['results']['bindings']) == 0 ):
-			return 1
-		return 0
+			return 0
+		return 1
 		
 	def add_customer_to_db(order_list):
 		# INPUT customer_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
-	 	# return 0 when added
+	 	# return 1 (true) when added
 		customer_id = IDGenerator.create_customer_id(order_list)
 		order_id = IDGenerator.create_order_id(order_list)
-		print(order_id)
 
 		UPDATE = ('''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
@@ -94,7 +93,7 @@ class FusekiHandler(object):
 
 
 	def is_gearBox_in_db(radius_list):
-		# retrun 0 if gearBox in db
+		# retrun 1 (true) if gearBox in db
 		string_radius_list = str(radius_list)#.replace(" ", "")
 		# FOR Å KUNNE SETTE INN VED ADD_-DEF MÅ .REPLACE BORT FORDI NÅR VI SETTER INN
 		# EN LISTE BLIR DET AUTOMATISK MELLOMROM MELLOM KOMMA OG TALL. SE PÅ DETTE!
@@ -113,12 +112,12 @@ class FusekiHandler(object):
 		data = r.json()
 		
 		if (len(data['results']['bindings']) == 0 ):
-			return 1
-		return 0
+			return 0
+		return 1
 
 	def add_gearBox_to_db(order_list):
 		# order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
-	 	# return 0 when added
+	 	# return 1 when added
 		gearBox_id  = IDGenerator.create_gearbox_id(order_list)
 
 		UPDATE = ('''
@@ -142,28 +141,33 @@ class FusekiHandler(object):
 
 	def is_order_in_db(order_list):
 		# query that ask if customer is in db 
-		# retrun 0 if customer in db
-		
-		QUERY = '''
+		# retrun 1 if customer in db
+		order_id = IDGenerator.create_order_id(order_list)
+		customer_id = IDGenerator.create_customer_id(order_list)
+
+		QUERY = ('''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-		SELECT ?order 
+		SELECT ?order
 		WHERE {
-			?Order kbe:hasPhone ?customerPhone.
-			# HER MÅ DET VEL INN BÅDE GearBox_ID OG Customer_ID???
-		FILTER ( EXISTS { ?Customer kbe:hasPhone "''' + str(customer_phone) + '''"} )
-		}
-		'''
+			?Customer kbe:hasOrder ?order.
+    		?Order kbe:hasCustomer ?customer.
+		FILTER ( 
+    		EXISTS { ?Customer kbe:hasOrder "'''+ str(order_id) +'''"} &&
+			EXISTS { ?Order kbe:hasCustomer "''' + str(customer_id) + '''" }
+  		)}
+		''')
+
 		PARAMS = {"query": QUERY}
 		r = requests.get(url = URL, params = PARAMS) 
 		data = r.json()
 		
 		if (len(data['results']['bindings']) == 0 ):
-			return 1
-		return 0
+			return 0 #FALSE
+		return 1
 
 	def add_order_to_db(order_list): #UFERDIG?
 		# order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
-	 	# return 0 when added
+	 	# return 1 when added
 		order_id = IDGenerator.create_order_id(order_list)
 		customer_id = IDGenerator.create_customer_id(order_list)
 		gearBox_id = IDGenerator.create_gearbox_id(order_list)
@@ -182,98 +186,41 @@ class FusekiHandler(object):
 		PARAMS = {"update": UPDATE}
 		r = requests.post(url = URL+"/update", data = PARAMS) 
 		
-		return FusekiHandler.is_order_in_db()
+		return FusekiHandler.is_order_in_db(order_list)
 
-
-	# def is_order_customer_linked(order_list): #UFERDIG
-	# 	# INPUT: [Name, address, phone, email, material, color, photoname, radius_list[]]
-	# 	order_id = IDGenerator.create_order_id(order_list)
-	# 	customer_id = IDGenerator.create_customer_id(order_list)
-
-	# 	# if link is made, return 0
-	# 	QUERY = '''
-	# 	PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-	# 	SELECT ?order 
-	# 	WHERE {
-  	# 		?Customer kbe:hasOrder ?order.
-	# 	FILTER ( EXISTS { ?Customer kbe:hasOrder "''' + str(order_id) + '''"} )
-	# 	}
-	# 	'''
-	# 	PARAMS = {"query": QUERY}
-	# 	r = requests.get(url = URL, params = PARAMS) 
-	# 	data = r.json()
-		
-	# 	if (len(data['results']['bindings']) == 0 ):
-	# 		return 1
-		
-	# 	QUERY = '''
-	# 	PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-	# 	SELECT ?customer 
-	# 	WHERE {
-  	# 		?Order kbe:hasCustomer ?customer.
-	# 	FILTER ( EXISTS { ?Order kbe:hasCustomer "''' + str(customer_id) + '''"} )
-	# 	}
-	# 	'''
-	# 	PARAMS = {"query": QUERY}
-	# 	r = requests.get(url = URL, params = PARAMS) 
-	# 	data = r.json()
-		
-	# 	if (len(data['results']['bindings']) == 0 ):
-	# 		return 1
-	# 	return 0
-
-
-	# def is_order_gearBox_linked(order_list): #UFERDIG
-	# 	# INPUT: [Name, address, phone, email, material, color, photoname, radius_list[]]
-	# 	order_id = IDGenerator.create_order_id(order_list)
-	# 	gearBox_id = IDGenerator.create_gearbox_id(order_list)
-
-	# 	#if link is made, return 0
-	# 	QUERY = '''
-	# 	PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-	# 	SELECT ?gearBox 
-	# 	WHERE {
-  	# 		?Order kbe:hasGearBox ?gearBox.
-	# 	FILTER ( EXISTS { ?Order kbe:hasGearBox "''' + str(gearBox_id) + '''"} )
-	# 	}
-	# 	'''
-	# 	PARAMS = {"query": QUERY}
-	# 	r = requests.get(url = URL, params = PARAMS) 
-	# 	data = r.json()
-		
-	# 	if (len(data['results']['bindings']) == 0 ):
-	# 		return 1
-	# 	return 0
-	
 
 	def create_order(order_list): #UFERDIG
-		if (FusekiHandler.is_customer_in_db(order_list) == 1): #=1 if customer not i db. then add.
+		order_id = IDGenerator.create_order_id(order_list)
+
+
+		if (FusekiHandler.is_customer_in_db(order_list) == 0): #=0(false) if customer not i db. then add.
 			FusekiHandler.add_customer_to_db(order_list)
 
-		if (FusekiHandler.is_gearBox_in_db(order_list) == 1):  #=1 if gearBox not i db. then add.
+		if (FusekiHandler.is_gearBox_in_db(order_list) == 0):  #=0(false) if gearBox not i db. then add.
 			FusekiHandler.add_gearBox_to_db(order_list)
+
+		'''is_order_in_db() er uferdig!!!'''
+		if (FusekiHandler.is_order_in_db(order_list) == 0):  #=0(false) if order not i db. then add.
+			FusekiHandler.add_order_to_db(order_list)
 	
 		
-		# make order object with the customer and gearbox in db : add_order_in_db
 		# call templet_file_creator to make the order python-file with the new name
 
 
 		# link Order with Customer, link Customer with Order.
 		# link Order with GearBox.
 
-		# return 0 if order is added to db (if something else, something went wrong)
+		# return 1 if order is added to db (if something else, something went wrong)
 
 
 # INPUT: order_list: [Name, address, phone, email, material, color, photoname, radius_list[]]
-order_list = ["Daniel Drage", "hulen", 44444444, "daniel@mail.com", "Brass", "None", "None", [100,150,200]]
+order_list = ["Hallvard Bjørgen", "Blåbærskogen", 9876543210, "hb@mail.com", "Diamond", "Uncertain", "", [100,200,300]]
 
 print(FusekiHandler.add_gearBox_to_db(order_list))
 print(FusekiHandler.add_customer_to_db(order_list))
+print(FusekiHandler.add_order_to_db(order_list))
 
 
 #  PROBLEM: RadiusList må gies inn som string, ikke list. Fordi list ikke har .replace muligheter.
 #  LØSNING: RadiusList gies inn som list, driter i å replace mellomrommene. :)) Må inn i IDGENERATOR og endre litt der.
 # MERK: FÅR LOV TIL Å LEGGE TIL FLERE GEARS MED SAMME GEARBOXID, MEN DET BLIR IKKE DUPLIKATER AV DE!
-
-
-# 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
