@@ -7,15 +7,15 @@ class IDGenerator():
         Gearbox
         Order
     """
-    # [Name, address, phone, email, material, color, radius_list[]]
+    # [Name, address, phone, email, material, color, photoPath, radius_list[]] #Lagt til photoPath som nest sist.
     # fil = form input list
     def create_customer_id(fil):
-        email = fil[3]
-        return email
+        phone = fil[2]
+        return phone
 
     def create_gearbox_id(fil):
         radius_list = fil[-1]
-        str_list = str(radius_list).replace(" ", "")
+        str_list = "r:" + str(radius_list).replace(", ", "-").replace("[","").replace("]","") +":" #endret litt
         return str_list
 
     def create_order_id(fil):
@@ -23,7 +23,7 @@ class IDGenerator():
         customer_id = str(IDGenerator.create_customer_id(fil))
         mat = str(IDGenerator.get_material_number(fil[4]))
         col = str(IDGenerator.get_color_number(fil))
-        order_id = gearbox_id + customer_id + mat + col
+        order_id = gearbox_id + customer_id + mat + col 
         return order_id
        
 
