@@ -274,8 +274,8 @@ order_list_4 = ["Richard", "Muren", 434343, "richard@mail.com", "Diamond", "None
 # print(FusekiHandler.add_customer_to_db(order_list_3))
 # print(FusekiHandler.add_gearBox_to_db(order_list_3))
 # print(FusekiHandler.add_order_to_db(order_list_3))
-print(FusekiHandler.create_order(order_list_2))
-print(FusekiHandler.count_customer_orders(order_list_2))
+# print(FusekiHandler.create_order(order_list_2))
+# print(FusekiHandler.count_customer_orders(order_list_2))
 
 
 

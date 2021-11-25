@@ -26,6 +26,9 @@ class IDGenerator():
         order_id = gearbox_id + customer_id + mat + col 
         return order_id
        
+    def create_photo_name(radiuslist):
+        return str(radiuslist).replace("[", "r")\
+            .replace("]", "r").replace(", ", "r")
 
     def create_all_ids(fil):
         """

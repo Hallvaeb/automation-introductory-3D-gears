@@ -35,3 +35,4 @@ class JournalCreator(object):
         except:
             print("Noe gikk feil i gear box journal creator")
             return False
+

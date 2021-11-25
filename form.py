@@ -39,6 +39,7 @@ class FormCreator(object):
                             <option>Uncertain</option>
                         </select><br>
                     </fieldset>
+                    <input type="hidden" name="photo_name" value='""'>
                     <input type="submit" value="Order now!" id="submit">
                     </form></section>"""
 
@@ -50,7 +51,7 @@ class FormCreator(object):
                     <fieldset>
                         <legend>Contact information</legend>
                         <label for="customer_name">Full name</label><br>
-                        <input type="text" name="customer_name" id="customer_name" placeholder="Your name, sir" value="Test Lobov" autofocus><br>
+                        <input type="text" name="customer_name" id="customer_name" placeholder="Your name, sir" value="Test Lobov"><br>
                         <label for="address">Address</label><br>
                         <input type="text" name="address" placeholder=".. For delivery, not visits.." id="address" value="Testing street 10"><br>
                         <label for="phone">Phone</label><br>
@@ -79,6 +80,7 @@ class FormCreator(object):
                             <option>Uncertain</option>
                         </select><br>
                     </fieldset>
+                    <input type="hidden" name="photo_name" value='""'>
                     <input type="submit" value="Order now!" id="submit">
                     </form></section>"""
             return form
