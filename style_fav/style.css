@@ -1,14 +1,11 @@
 body {
-    min-width: 65ch;
-    max-width: 75ch;
     line-height: 1.5;
     margin: auto;
     background-color: lightgrey;
     font-family: Verdana;
-    font-size: 20px;
+    font-size: 14px;
     color: #323232;
     text-align: center;
-    padding-bottom: 50px;
 }
 
 header {
@@ -35,16 +32,10 @@ h3 {
     margin: 1em 0em 5em 0em;
 }
 
-#tax{
-    text-align: right;
-}
 form{
     position: relative;
     width: 400px;
     height: 200px;
     text-align: left;
     margin-left: 30%;
-}
-#submitForm{
-    text-align: center;
 }
