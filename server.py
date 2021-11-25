@@ -215,6 +215,7 @@ class ServerHandler(BaseHTTPRequestHandler):
 					# gear box id is created based on radius list.
 					gear_box_id = IDGenerator.create_gearbox_id([radius_list])
 					if(JournalCreator.create_gear_box_journal_file(radius_list, gear_box_id)):
+						print("Hei")
 						out += "The gearbox was not found in the database. We will supply it when it is ready. Our magnificent Johanne is working hard to make a photo of it available ASAP."
 					print(gear_box_id)
 					FusekiHandler.add_gearBox_to_db_rad(radius_list)
