@@ -70,7 +70,7 @@ class FusekiHandler(object):
 	 	# return 0 when added
 		customer_id = IDGenerator.create_customer_id(order_list)
 		order_id = IDGenerator.create_order_id(order_list)
-
+		print(order_id)
 
 		UPDATE = ('''
 		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
@@ -139,26 +139,26 @@ class FusekiHandler(object):
 		return FusekiHandler.is_gearBox_in_db(order_list[-1])
 
 
-	# def is_order_in_db(order_list):
-	# 	# query that ask if customer is in db 
-	# 	# retrun 0 if customer in db
+	def is_order_in_db(order_list):
+		# query that ask if customer is in db 
+		# retrun 0 if customer in db
 		
-	# 	QUERY = '''
-	# 	PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-	# 	SELECT ?order 
-	# 	WHERE {
-	# 		?Order kbe:hasPhone ?customerPhone.
-	# 		# HER MÅ DET VEL INN BÅDE GearBox_ID OG Customer_ID???
-	# 	FILTER ( EXISTS { ?Customer kbe:hasPhone "''' + str(customer_phone) + '''"} )
-	# 	}
-	# 	'''
-	# 	PARAMS = {"query": QUERY}
-	# 	r = requests.get(url = URL, params = PARAMS) 
-	# 	data = r.json()
+		QUERY = '''
+		PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
+		SELECT ?order 
+		WHERE {
+			?Order kbe:hasPhone ?customerPhone.
+			# HER MÅ DET VEL INN BÅDE GearBox_ID OG Customer_ID???
+		FILTER ( EXISTS { ?Customer kbe:hasPhone "''' + str(customer_phone) + '''"} )
+		}
+		'''
+		PARAMS = {"query": QUERY}
+		r = requests.get(url = URL, params = PARAMS) 
+		data = r.json()
 		
-	# 	if (len(data['results']['bindings']) == 0 ):
-	# 		return 1
-	# 	return 0
+		if (len(data['results']['bindings']) == 0 ):
+			return 1
+		return 0
 
 	def add_order_to_db(order_list): #UFERDIG?
 		# order_list: [Name, address, phone, email, material, color, photoPath, radius_list[]]
@@ -265,7 +265,7 @@ class FusekiHandler(object):
 
 
 # INPUT: order_list: [Name, address, phone, email, material, color, photoPath, radius_list[]]
-order_list = ["Anine", "Aninegata", 11114111, "anine@mail.com", "Brass", "None", "photoPath[50,60,70,80]", [50,60,70,80]]
+order_list = ["Daniel Drage", "hulen", 44444444, "daniel@mail.com", "Brass", "None", "None", [100,150,200]]
 
 print(FusekiHandler.add_gearBox_to_db(order_list))
 print(FusekiHandler.add_customer_to_db(order_list))
