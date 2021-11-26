@@ -210,10 +210,11 @@ class FusekiHandler(object):
 		return FusekiHandler.is_order_in_db(order_list)
 
 	def add_photo_name_to_gearbox(radius_list, photo_name): #photo_name = gearbox_id fra id-fil?
+		old_photo_name = FusekiHandler.get_photo_name_from_db(radius_list)
 		try:
 			UPDATE = ('''
 			PREFIX kbe:<http://www.my-kbe.com/kbe-system.owl#>
-			DELETE { ?GearBox kbe:hasPhotoName ""}
+			DELETE { ?GearBox kbe:hasPhotoName "'''+str(old_photo_name)+'''"}
 			INSERT { ?GearBox kbe:hasPhotoName "''' + str(photo_name) + '''". }
 			WHERE { ?GearBox kbe:hasRadiusList "'''+str(radius_list)+'''" }
 			''')
