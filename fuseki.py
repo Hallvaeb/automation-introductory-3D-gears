@@ -39,7 +39,7 @@ class FusekiHandler(object):
 			# return the n of the photo of this gearbox
 			photo_name = data['results']['bindings'][0]['photoname']['value']
 			if len(photo_name) == 0:
-				return 0
+				return ""
 			return photo_name
 		except:
 			return 0
