@@ -4,9 +4,9 @@ import NXOpen
 import NXOpen.Gateway
 
 #----------------------------------------------------------------------#
-gear_radius_list = <RADIUS_LIST>
-project_folder_path = "<PROJECT_FOLDER_PATH>"
-photo_name = "<PHOTO_NAME>"
+gear_radius_list = [10, 20]
+project_folder_path = "C:/Users/Eier/OneDrive/Studier/TMM4270/TMM4270_A3"
+photo_name = "r10r20r"
 #----------------------------------------------------------------------#
 
 

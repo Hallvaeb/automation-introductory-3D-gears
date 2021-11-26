@@ -42,7 +42,7 @@ class FusekiHandler(object):
 				return ""
 			return photo_name
 		except:
-			return 0
+			return ""
 
 
 	def is_customer_in_db(customer_phone):

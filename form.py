@@ -4,7 +4,7 @@ class FormCreator(object):
     # Made a class so making multiple versions of the form and switching between is easy,
     # should one want for example separate forms for private or company customers...
 
-    def create_form_private_customer(radius_list):
+    def get_form_private_customer(radius_list):
             # This returns a predefined form
             return """<form action="/reciept" method="post">
                     <h2>We're ready to take your order!</h2>
@@ -43,7 +43,7 @@ class FormCreator(object):
                     </form></section>"""
 
 
-    def create_form_private_customer_DUMMY(radius_list):
+    def get_form_private_customer_DUMMY(radius_list):
             # This returns a ALREADY VALUED form for faster testing
             form = """<form action="/reciept" method="post">
                     <h2>We're ready to take your order!</h2>
@@ -83,6 +83,29 @@ class FormCreator(object):
                     </form></section>"""
             return form
                     
+    def get_form_set_radiuses(n_gears):
+        out = """
+        <form action = "/review" method="post">
+			"""+str(n_gears)+" gears chosen! Choose the radiuses:<br><br>"""
+
+		# Making a field for each gear radius
+        for i in range(int(n_gears)): # n_gears
+                out += "<label for='gear'" + str(i) + "> Gear " + str(i+1) + ": </label>"
+                out +="""
+                <input type = "number" pattern="0123456789" id = '""" + str(i) + """' 
+                    name = '"gear" """ + str(i) +""" ' placeholder = "Radius [mm]" 
+                    autofocus required> <br><br> """
+
+        # Add submit button at the end and end form
+        out += """<input type="submit" value="Submit"></form>"""
+        return out
+
+
+    get_form_n_gears = """<form action = '/setRadius' method='post'>
+						<label for='n_gears'>How many gears do you want?</label><br><br>
+						<input pattern='0123456789' type='number' name='n_gears' id='n_gears' autofocus required><br><br>
+						<input type='submit' value='submit'><br>
+					</form>"""
 
     def list_to_string(radius_list):
         return str(radius_list).replace("%5B", "[").replace("%2C", ",").replace("%5D", "]")

@@ -7,7 +7,7 @@ from id import IDGenerator
 from journal_creator import JournalCreator
 
 HOST_NAME = '127.0.0.1' 
-PORT_NUMBER = 1234
+PORT_NUMBER = 1010
 photo_name = "default"
 
 
@@ -24,53 +24,45 @@ class ServerHandler(BaseHTTPRequestHandler):
 
 		head = ServerHandler.create_header()
 		global photo_name
-
 		path = s.path
+		
 		if path.find("/") != -1 and len(path) == 1:
 			s.send_response(200)
 			s.send_header("Content-type", "text/html")
 			s.end_headers()
 
+			# get_form_n_gears is static html string
 			out = head+"""
 			<body>
 				<section>
-				
 					<h1>Welcome to</h1>
 					<h2>GEAR 10 Productions</h2>
 					<h3>GearBox - building [1/2]</h3>
-					
-					<form action = '/setRadius' method='post'>
-						<label for='n_gears'>How many gears do you want?</label><br><br>
-						<input pattern='0123456789' type='number' name='n_gears' id='n_gears' autofocus required><br><br>
-						<input type='submit' value='submit'><br>
-					</form>
-
+					"""+FormCreator.get_form_n_gears+"""
 				</section>
 			</body>
 			"""
-			s.wfile.write(bytes(out, 'utf-8'))
 
-		elif path.find("/reciept") != -1:
-			s.send_response(200)
-			s.send_header("Content-type", "text/html")
-			s.end_headers()
-		
-			thankyou = head+"""
-			<body> <section><h1>Aii, you can't do that! The order was made but now you lost your reciept! </h1><br>
-			"""
-			s.wfile.write(bytes(thankyou, 'utf-8'))
-			s.wfile.write(bytes('<a href="/"><button>Make another!</button></a></body>', 'utf-8'))
+			s.wfile.write(bytes(out, 'utf-8'))
 
 		elif path.find("/image.png") != -1:
 			# Make right headers
 			s.send_response(200)
 			s.send_header("Content-type", "image/png")
 			s.end_headers()
-			#Read the file
-			bReader = open("./Product_images/"+str(photo_name)+".png", "rb")
-			#Write file.
-			theImg = bReader.read()
-			s.wfile.write(theImg)
+			try:
+				# Read the file
+				bReader = open("./Product_images/"+str(photo_name)+".png", "rb")
+				print("bReader ok")
+				s.wfile.write(bReader.read())
+				print("bReader read")
+			except:
+				# File not found
+				print("except")
+				msg = "Tester." # The gearbox was found in the database, but a photo has not yet been created.	Our magnificent Johanne is working hard to make a photo of it available ASAP
+				print(msg)
+				s.wfile.write(bytes(msg, 'utf-8'))
+				print("except written")
 
 		elif path.find("/favicon_10.ico") != -1:
 			# Make right headers
@@ -83,35 +75,52 @@ class ServerHandler(BaseHTTPRequestHandler):
 			theImg = bReader.read()
 			s.wfile.write(theImg)
 
-		# elif path.find("/style.css") != -1:
-		# 	# Make right headers
-		# 	s.send_response(200)
-		# 	s.send_header("Content-type", "text/css")
-		# 	s.end_headers()
-		# 	#Read the file
-		# 	#Write file.
-		# 	bReader = open("./style_fav/style.css", "rb")
-		# 	theImg = bReader.read()
-		# 	s.wfile.write(theImg)
+		elif path.find("/style.css") != -1:
+			# Make right headers
+			s.send_response(200)
+			s.send_header("Content-type", "text/css")
+			s.end_headers()
+			#Read the file
+			#Write file.
+			bReader = open("./style_fav/style.css", "rb")
+			theImg = bReader.read()
+			s.wfile.write(theImg)
 
 		else:
 			s.send_response(200)
 			s.send_header("Content-type", "text/html")
 			s.end_headers()
-		
-			s.wfile.write(bytes(head, 'utf-8'))
-			s.wfile.write(bytes("<body><p>The path: " + path + "</p>", "utf-8"))
-			s.wfile.write(bytes('</body></html>', "utf-8"))
+
+			if path.find("/reciept") != -1:
+			# Special message to making GET call to /reciept
+				out = head+"""
+				<body> 
+					<section>
+						<h1>Aii, you can't do that! The order was made but now you lost your reciept! </h1><br>\
+					</section>
+					<a href="/"><button>Make another!</button></a>
+				</body></html>"""
+			else:
+				out = head+"""
+				<body>
+					<p>
+						The path: " """+ path + """ "
+						has not been implemented as a GET method.
+						Start from start page!
+					</p>
+					<a href="/"><button>Go back</button></a>
+				</body></html>"""
+			s.wfile.write(bytes(out, "utf-8"))
 
 
 	def do_POST(s):
 
 		global photo_name
-
 		head = ServerHandler.create_header()
 		path = s.path
-			
+		
 		if path.find("/setRadius") != -1:
+			
 			s.send_response(200)
 			s.send_header("Content-type", "text/html")
 			s.end_headers()
@@ -122,28 +131,16 @@ class ServerHandler(BaseHTTPRequestHandler):
 				.decode()\
 					.split("=")[1]
 
-			# HTML title ++
-			out = head+"""<body>
-			<section><h1>GearBox - building [2/2]</h1>
-			<form action = "/review" method="post">
-			"""+str(n_gears)+""" 
-			gears chosen! Choose the radiuses:<br><br>
-			"""			
-			# Making a field for each gear radius
-			for i in range(int(n_gears)): # n_gears
-					out += "<label for='gear'" + str(i) + "> Gear " + str(i+1) + ": </label>"
-					out +="""
-					<input type = "number" pattern="0123456789" id = '""" + str(i) + """' 
-						name = '"gear" """ + str(i) +""" ' placeholder = "Radius [mm]" 
-						autofocus> <br><br> """
-							
-			# Making the buttons
-			out += """<input type="submit" value="Submit"></form></section>
+			out = head+"""
+			<body>
+				<section>
+					<h1>GearBox - building [2/2]</h1>
+					"""+ FormCreator.get_form_set_radiuses(n_gears)+"""
+				</section>
 				<a href="/"> <button>Go back</button> </a> </body>"""
 			s.wfile.write(bytes(out, 'utf-8'))
 
 		elif path.find("/review") != -1:
-			# IN POST
 			s.send_response(200)
 			s.send_header("Content-type", "text/html")
 			s.end_headers()
@@ -151,41 +148,55 @@ class ServerHandler(BaseHTTPRequestHandler):
 			# Reset list of radiuses
 			radius_list = []
 
-			# Get the arguments
+			# Get the arguments from previous page
 			content_len = int(s.headers.get('Content-Length'))
-			post_body = s.rfile.read(content_len)
-			param_line = post_body.decode()
-			pairs = param_line.split("&")
+			pairs = s.rfile.read(content_len)\
+				.decode()\
+					.split("&")
 			n_gears = len(pairs)
+
+			# Making radius list for the requested gear box
 			for i in range(0, n_gears):
 				radius_list.append(int(pairs[i].split("=")[1]))
 
-			# Write the page 
 			out = head+"""<body><section><h1>GearBox - review </h1>
-					""" + str(n_gears) + ' gears chosen. Radiuses are as follows:<br><br>'
+					""" + str(n_gears) + " gears chosen. Radiuses are as follows:<br><br>"
 			for i in range(n_gears):
-				out += ('Gear nr.' + str(i+1) + ': ' + str(radius_list[i]) + ' [mm]<br>')
-			out += '<a href="/"><button>Go back</button></a><br><br>'
-
+				out += ("Gear nr." + str(i+1) + ": " + str(radius_list[i]) + " [mm]<br>")
+			out += "<a href='/'><button>Go back</button></a><br><br>"
+			
 			try:
-				photo_name = IDGenerator.create_photo_name(radius_list)
 				if (FusekiHandler.is_gearBox_in_db(radius_list) != 0):
-					FusekiHandler.add_photo_name_to_gearbox(radius_list, photo_name)
-					out += '<img src="/image.png" \
-						alt= "The gearbox was found in the database, but a photo has not yet been created. \
-							Our magnificent Johanne is working hard to make a photo of it available ASAP."\
-							width="500">'
+					# Looking for photo of the gear box
+					photo_name = FusekiHandler.get_photo_name_from_db(radius_list)
+					if photo_name == "":
+						# photoname er ikke laget
+						out += """The gearbox was found in the database, but a photo has not yet been created. 
+								Our magnificent Johanne is working hard to make a photo of it available ASAP."""
+					else:
+						# Photo name ligger i databasen!
+						# Supply the photo
+						out += """<img 
+							src="/image.png" 
+							alt= "The gearbox was found in the database, but a photo has not yet been created. 
+								Our magnificent Johanne is working hard to make a photo of it available ASAP."
+								width="500">"""
 				else:
-					response = JournalCreator.create_gear_box_journal_file(radius_list, photo_name)
-					if(response):
-						out += "The gearbox was not found in the database, but is now being created. We will supply it when it is ready. <br>Our magnificent Johanne is working hard to make a photo of it available ASAP."
+					# Gear box er ikke i databasen, lager journal fil
+					photo_name = IDGenerator.create_photo_name(radius_list)
+					JournalCreator.create_gear_box_journal_file(radius_list, photo_name)
+					out += """The gearbox was not found in the database, but is now being created. We will supply it when it is ready. <br>
+						Our magnificent Johanne is working hard to make a photo of it available ASAP."""
 					FusekiHandler.add_gearBox_to_db_rad(radius_list)
+					FusekiHandler.add_photo_name_to_gearbox(radius_list, photo_name)
+					
 			except Exception as e:
+				# Print future error messages.
 				print(e)
 				out += "Something went wrong"
 
 			# Skjema for bestilling
-			form = FormCreator.create_form_private_customer_DUMMY(radius_list)
+			form = FormCreator.get_form_private_customer_DUMMY(radius_list)
 			out += form+"</body>"
 			s.wfile.write(bytes(out, 'utf-8'))
 		
@@ -211,6 +222,18 @@ class ServerHandler(BaseHTTPRequestHandler):
 			""" + ServerHandler.create_reciept(form_input_list)
 			s.wfile.write(bytes(out, 'utf-8'))	
 			FusekiHandler.create_order(form_input_list)
+		
+		else:
+			s.send_response(200)
+			s.send_header("Content-type", "text/html")
+			s.end_headers()
+		
+			out = head + "<body><p>The path: " + path + """ 
+				has not been implemented as a GET method.
+				Start from start page!</p> <a href="/"><button>Go back</button></a><br><br>
+				</body></html>"""
+			
+			s.wfile.write(bytes(out, "utf-8"))
 
 	def create_header():
 		# Returns a header
@@ -222,14 +245,13 @@ class ServerHandler(BaseHTTPRequestHandler):
 				<link rel="icon" href="/favicon_10.ico" type="image/x-icon"/>
 				<link rel="stylesheet" href="/style.css">
 			</head>
-			"""#<link rel="stylesheet" href="/style.css">
+			"""
+			
 
 	def get_personalized_message(form_input_list):
 		# customer has now been added to db with the current order, and therefore everyone is in db at this point, with >0 orders
 		try:
-			print("INPUT: ", form_input_list)
 			n_orders = FusekiHandler.count_customer_orders(form_input_list)
-			print("n order: ", n_orders)
 			if n_orders >= 1:
 				return "<h3>WELCOME BACK OL' PAL! You now have "+str(n_orders)+" orders!</h3>"
 			else:
